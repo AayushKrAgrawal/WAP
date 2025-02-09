@@ -1,0 +1,1 @@
+Admin panel for managing products, orders, and users.

@@ -1,0 +1,1 @@
+Stores user-uploaded files such as product images.

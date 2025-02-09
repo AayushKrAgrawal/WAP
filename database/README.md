@@ -1,0 +1,1 @@
+Contains database migrations, seeders, and SQL dump files.

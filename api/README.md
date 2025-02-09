@@ -1,0 +1,1 @@
+API endpoints for AJAX calls and website interactions.

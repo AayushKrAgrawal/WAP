@@ -1,0 +1,1 @@
+Handles business logic like authentication, cart, and orders.

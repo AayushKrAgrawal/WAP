@@ -1,0 +1,1 @@
+Common reusable PHP components like header, footer, and database connection.
