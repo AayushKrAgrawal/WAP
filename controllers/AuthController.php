@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = $_POST['password'];  // User's plain password
         $confirmPassword = $_POST['confirmPassword'];  // Re-enter password
         $termsAgreed = isset($_POST['terms']) ? 1 : 0;
+        $role = 'user'; // Default role for new users
 
         // Form validation
         if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($confirmPassword) || empty($dob) || !$termsAgreed) {
@@ -41,12 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
         // Use prepared statements to prevent SQL injection
-        $sql = "INSERT INTO users (first_name, last_name, email, phone, dob, gender, password_hash, terms_agreed)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (first_name, last_name, email, phone, dob, gender, password_hash, terms_agreed, role)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $conn->prepare($sql)) {
             // Bind parameters to the prepared statement
-            $stmt->bind_param("ssssssss", $firstName, $lastName, $email, $phone, $dob, $gender, $passwordHash, $termsAgreed);
+            $stmt->bind_param("sssssssss", $firstName, $lastName, $email, $phone, $dob, $gender, $passwordHash, $termsAgreed, $role);
 
             // Execute the query
             if ($stmt->execute()) {
@@ -98,9 +99,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['first_name'] = $user['first_name'];
                     $_SESSION['last_name'] = $user['last_name'];
                     $_SESSION['email'] = $user['email'];
+                    $_SESSION['role'] = $user['role']; // Store role in session
 
-                    // Redirect to a logged-in page (e.g., dashboard)
-                    header("Location: /hamroPratibha/pages/dashboard.php");
+                    // Redirect based on role
+                    if ($user['role'] == 'admin') {
+                        header("Location: /hamroPratibha/pages/admin_dashboard.php");
+                    } else {
+                        header("Location: /hamroPratibha/pages/dashboard.php");
+                    }
                     exit;
                 } else {
                     echo "Incorrect password!";
