@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Redirect based on role
                     if ($user['role'] == 'admin') {
-                        header("Location: /hamroPratibha/pages/admin_dashboard.php");
+                        header("Location: ../admin\index.php");
                     } else {
                         header("Location: /hamroPratibha/pages/dashboard.php");
                     }
