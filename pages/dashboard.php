@@ -46,7 +46,7 @@ $result = $conn->query($sql);
                         <p class="text-gray-600 mb-4"><?php echo substr($product['description'], 0, 100); ?>...</p>
                         <p class="text-lg font-bold text-indigo-600">Rs.<?php echo number_format($product['price'], 2); ?></p>
                         <div class="mt-4">
-                            <a href="product_details.php?id=<?php echo $product['product_id']; ?>" class="text-indigo-600 hover:bg-indigo-100 px-4 py-2 rounded-md">View Details</a>
+                            <a href="product_detail.php?id=<?php echo $product['product_id']; ?>" class="text-indigo-600 hover:bg-indigo-100 px-4 py-2 rounded-md">View Details</a>
                         </div>
                     </div>
                     <?php
