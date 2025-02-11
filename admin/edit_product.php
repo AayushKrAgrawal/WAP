@@ -5,7 +5,7 @@ include('../includes/db_connect.php');
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: /hamroPratibha/pages/login.php");
-    exit();
+    exit;
 }
 
 if (isset($_GET['product_id'])) {
@@ -61,43 +61,52 @@ if (isset($_GET['product_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
-    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.js"></script>
+    <!-- Correct TailwindCSS Link -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50 font-sans">
 
-    <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
-        <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Edit Product</h1>
+    <!-- Container -->
+    <div class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl p-8">
 
-        <form method="POST" action="">
-            <!-- Product Name -->
-            <div class="mb-4">
-                <label for="product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                <input type="text" id="product_name" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>" required class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+            <!-- Title -->
+            <h1 class="text-3xl font-semibold text-gray-800 text-center mb-8">Edit Product</h1>
 
-            <!-- Description -->
-            <div class="mb-4">
-                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea id="description" name="description" required class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><?php echo htmlspecialchars($product['description']); ?></textarea>
-            </div>
+            <!-- Form -->
+            <form method="POST" action="" class="space-y-6">
+                
+                <!-- Product Name -->
+                <div>
+                    <label for="product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input type="text" id="product_name" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>" required class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
 
-            <!-- Price -->
-            <div class="mb-4">
-                <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
-                <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="description" name="description" required class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"><?php echo htmlspecialchars($product['description']); ?></textarea>
+                </div>
 
-            <!-- Image URL -->
-            <div class="mb-4">
-                <label for="image_url" class="block text-sm font-medium text-gray-700">Image URL</label>
-                <input type="text" id="image_url" name="image_url" value="<?php echo htmlspecialchars($product['image_url']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+                <!-- Price -->
+                <div>
+                    <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+                    <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
 
-            <!-- Submit Button -->
-            <div class="mt-6">
-                <button type="submit" name="edit_product" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Update Product</button>
-            </div>
-        </form>
+                <!-- Image URL -->
+                <div>
+                    <label for="image_url" class="block text-sm font-medium text-gray-700">Image URL</label>
+                    <input type="text" id="image_url" name="image_url" value="<?php echo htmlspecialchars($product['image_url']); ?>" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button type="submit" name="edit_product" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">Update Product</button>
+                </div>
+
+            </form>
+        </div>
     </div>
 
 </body>
