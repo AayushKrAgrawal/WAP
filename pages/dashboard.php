@@ -1,18 +1,10 @@
 <?php
-// Start the session
 session_start();
+include('../includes/db_connect.php');
 
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    // If not logged in, redirect to the login page
-    header("Location: login.php");
-    exit;
-}
-
-// Get the user's information from the session
-$user_first_name = $_SESSION['first_name'];
-$user_last_name = $_SESSION['last_name'];
-$user_email = $_SESSION['email'];
+// Fetch all products from the database
+$sql = "SELECT * FROM products ORDER BY created_at DESC";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -20,50 +12,49 @@ $user_email = $_SESSION['email'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - eCommerce App</title>
-    <!-- Link to Tailwind CSS -->
+    <title>User Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body class="bg-gray-100">
 
     <!-- Navbar -->
-    <nav class="bg-purple-50 border-b border-gray-300">
-        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <span class="font-bold text-black">Hamro Pratibha</span>
-                <a href="#" class="text-black">Home</a>
-                <a href="#" class="text-black">Shop</a>
-                <a href="#" class="text-black">About Us</a>
-                <a href="#" class="text-black">Return and Refund Policy</a>
-                <a href="#" class="text-black">Contact Us</a>
+    <nav class="bg-indigo-600 p-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-white text-xl font-semibold">
+                <a href="dashboard.php">MyStore</a>
             </div>
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-1">
-                    <i class="fas fa-search text-black"></i>
-                    <span class="text-black">Search</span>
-                </div>
-                <div class="flex items-center space-x-1">
-                    <i class="fas fa-shopping-bag text-black"></i>
-                    <span class="text-black">3</span>
-                </div>
-                <a href="profile.php" class="text-black hover:underline">Profile</a> <!-- Replaced Login with Profile -->
+            <div class="space-x-6 text-white">
+                <a href="profile.php" class="hover:bg-indigo-500 p-2 rounded-md transition">Profile</a>
+                <a href="logout.php" class="hover:bg-red-500 p-2 rounded-md transition">Logout</a>
             </div>
         </div>
     </nav>
 
     <!-- Dashboard Content -->
-    <div class="container mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Your Dashboard</h2>
+    <div class="max-w-7xl mx-auto py-8 px-4">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Welcome to your Dashboard</h1>
 
-        <div class="space-y-4">
-            <p><strong>Full Name:</strong> <?php echo $user_first_name . ' ' . $user_last_name; ?></p>
-            <p><strong>Email:</strong> <?php echo $user_email; ?></p>
-            <p><strong>Phone Number:</strong> <?php echo isset($_SESSION['phone']) ? $_SESSION['phone'] : 'Not Available'; ?></p>
-        </div>
-
-        <div class="mt-6">
-            <a href="profile.php" class="text-blue-500 hover:underline">Edit Profile</a>
+        <!-- Product Cards Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <?php
+            if ($result->num_rows > 0) {
+                while ($product = $result->fetch_assoc()) {
+                    ?>
+                    <div class="bg-white p-4 rounded-lg shadow-lg transition transform hover:scale-105 hover:shadow-xl">
+                        <img src="<?php echo $product['image_url']; ?>" alt="<?php echo $product['product_name']; ?>" class="w-full h-48 object-cover rounded-md mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800"><?php echo $product['product_name']; ?></h3>
+                        <p class="text-gray-600 mb-4"><?php echo substr($product['description'], 0, 100); ?>...</p>
+                        <p class="text-lg font-bold text-indigo-600">Rs.<?php echo number_format($product['price'], 2); ?></p>
+                        <div class="mt-4">
+                            <a href="product_details.php?id=<?php echo $product['product_id']; ?>" class="text-indigo-600 hover:bg-indigo-100 px-4 py-2 rounded-md">View Details</a>
+                        </div>
+                    </div>
+                    <?php
+                }
+            } else {
+                echo "<p class='col-span-4 text-center text-gray-500'>No products available at the moment.</p>";
+            }
+            ?>
         </div>
     </div>
 
