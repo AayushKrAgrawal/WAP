@@ -1,31 +1,72 @@
 <?php
-session_start();  // Start the session
+// Include the database connection
+include('../includes/db_connect.php');
 
-// Check if user is logged in
+// Start session to manage logged-in users
+session_start();
+
+// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');  // Redirect to login page if not logged in
-    exit;
+    header('Location: login.php');
+    exit();
 }
 
-// Include database connection
-include '../includes/db_connect.php'; // If the file is inside an 'includes' folder
+// Get the logged-in user's ID
+$userId = $_SESSION['user_id'];
 
-// Retrieve user ID from session
-$user_id = $_SESSION['user_id'];
+// Fetch the user's current details
+$sql = "SELECT * FROM users WHERE user_id = ?";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+    } else {
+        echo "<p>User not found.</p>";
+        exit();
+    }
+} else {
+    echo "<p>Error fetching user details.</p>";
+    exit();
+}
 
-// Fetch user details from the database
-$sql = "SELECT * FROM users WHERE id = :user_id";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-$stmt->execute();
+// Handle the profile update request
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['update_profile'])) {
+        $newFirstName = $_POST['first_name'];
+        $newLastName = $_POST['last_name'];
+        $newEmail = $_POST['email'];
+        $newPhone = $_POST['phone'];
+        $newGender = $_POST['gender'];
+        $newDob = $_POST['dob'];
 
-// Fetch the user's data
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Update the user's details in the database
+        $updateSql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, gender = ?, dob = ? WHERE user_id = ?";
+        if ($updateStmt = $conn->prepare($updateSql)) {
+            $updateStmt->bind_param("ssssssi", $newFirstName, $newLastName, $newEmail, $newPhone, $newGender, $newDob, $userId);
+            $updateStmt->execute();
+            header('Location: profile.php'); // Refresh the page to reflect changes
+            exit();
+        } else {
+            echo "<p>Error updating profile.</p>";
+        }
+    }
 
-// Check if the user exists in the database
-if (!$user) {
-    echo "User not found.";
-    exit;
+    // Handle account deletion
+    if (isset($_POST['delete_account'])) {
+        $deleteSql = "DELETE FROM users WHERE user_id = ?";
+        if ($deleteStmt = $conn->prepare($deleteSql)) {
+            $deleteStmt->bind_param("i", $userId);
+            $deleteStmt->execute();
+            session_destroy();
+            header('Location: register.php'); // Redirect to registration page after deletion
+            exit();
+        } else {
+            echo "<p>Error deleting account.</p>";
+        }
+    }
 }
 ?>
 
@@ -35,61 +76,77 @@ if (!$user) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
+        /* Additional styling for profile page */
+        .profile-card {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            background: #f7f7f7;
             padding: 20px;
-            background-color: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            font-size: 16px;
-            color: #555;
-        }
-        img {
-            border-radius: 50%;
-            margin-top: 20px;
-        }
-        .logout-link {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 16px;
-            margin-top: 20px;
-            display: inline-block;
-        }
-        .logout-link:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 font-sans tracking-wide">
 
-    <div class="container">
-        <h1>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</h1>
-        
-        <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-        <p><strong>Age:</strong> <?php echo htmlspecialchars($user['age']); ?></p>
-        <p><strong>Bio:</strong> <?php echo nl2br(htmlspecialchars($user['bio'])); ?></p>
+    <!-- Navbar (you can customize this) -->
+    <nav class="bg-blue-600 p-4 text-white">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="dashboard.php" class="text-xl">Dashboard</a>
+            <a href="logout.php" class="hover:text-gray-300">Logout</a>
+        </div>
+    </nav>
 
-        <?php if (!empty($user['profile_picture'])): ?>
-            <p><strong>Profile Picture:</strong></p>
-            <img src="uploads/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture" width="150" height="150">
-        <?php else: ?>
-            <p>No profile picture uploaded.</p>
-        <?php endif; ?>
+    <!-- User Profile Section -->
+    <div class="container mx-auto px-4 py-10">
+        <div class="profile-card max-w-lg mx-auto">
+            <h2 class="text-2xl font-semibold mb-4">User Profile</h2>
+            
+            <form method="POST" action="profile.php">
+                <!-- Display user details -->
+                <div class="mb-4">
+                    <label for="first_name" class="block text-gray-700">First Name</label>
+                    <input type="text" name="first_name" id="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md" required>
+                </div>
 
-        <!-- Optionally, provide a logout link -->
-        <a href="logout.php" class="logout-link">Logout</a>
+                <div class="mb-4">
+                    <label for="last_name" class="block text-gray-700">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700">Email</label>
+                    <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="phone" class="block text-gray-700">Phone</label>
+                    <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                </div>
+
+                <div class="mb-4">
+                    <label for="gender" class="block text-gray-700">Gender</label>
+                    <select name="gender" id="gender" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                        <option value="male" <?php echo $user['gender'] == 'male' ? 'selected' : ''; ?>>Male</option>
+                        <option value="female" <?php echo $user['gender'] == 'female' ? 'selected' : ''; ?>>Female</option>
+                        <option value="other" <?php echo $user['gender'] == 'other' ? 'selected' : ''; ?>>Other</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="dob" class="block text-gray-700">Date of Birth</label>
+                    <input type="date" name="dob" id="dob" value="<?php echo htmlspecialchars($user['dob']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md" required>
+                </div>
+
+                <!-- Submit button to update profile -->
+                <button type="submit" name="update_profile" class="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Update Profile</button>
+            </form>
+
+            <form method="POST" action="profile.php" class="mt-4">
+                <!-- Button to delete account -->
+                <button type="submit" name="delete_account" class="w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete Account</button>
+            </form>
+        </div>
     </div>
 
 </body>
