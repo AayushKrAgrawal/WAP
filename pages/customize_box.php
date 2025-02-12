@@ -12,6 +12,29 @@ include '../components/card.php';
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
+<style>
+    .heart-path.active {
+        fill: red;
+        stroke: red;
+    }
+</style>
+<script>
+    // Initialize heart buttons after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add click event listeners to all heart buttons
+        const heartButtons = document.querySelectorAll('.heart-btn');
+        
+        heartButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const path = this.querySelector('.heart-path');
+                if (path) {
+                    path.classList.toggle('active');
+                }
+            });
+        });
+    });
+</script>
 <body style="background-color: #F5EFFF;">
 
 <!-- Our Packages Section -->
