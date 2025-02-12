@@ -16,26 +16,26 @@ include '../components/card.php';
 
 <!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose your Customized Gift</h2>
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose your Cusomized Box</h2>
     
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Sidebar Filters -->
-        <aside class="w-full md:w-1/4 bg-white rounded-lg shadow-md p-6 flex flex-col">
+        <aside class="w-full md:w-1/4 bg-white rounded-lg shadow-md p-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Filters <span class="text-sm text-gray-500 cursor-pointer">Clear filters</span></h3>
             <div>
                 <h4 class="font-medium text-gray-700 mb-2">Categories</h4>
                 <div class="space-y-2">
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Itar</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Paper Bag</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Kafan</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Cloth Pouch</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Caps</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Nanglo Board</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Food</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Mesh Cloth</span>
                     </label>
                 </div>
             </div>
@@ -51,7 +51,7 @@ include '../components/card.php';
         <!-- Packages Grid -->
         <div class="w-full md:w-3/4">
             <div class="flex justify-between items-center mb-6">
-                <p class="text-gray-600">Showing 1003 Products</p>
+                <p class="text-gray-600">Showing 6 Products</p>
                 <div>
                     <label class="text-gray-600 mr-2">Sort By</label>
                     <select class="border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -66,12 +66,12 @@ include '../components/card.php';
             <!-- Packages Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
-                    echo renderCard(["imageUrl" => "https://i0.wp.com/handicraftsinnepal.com/wp-content/uploads/2020/07/traditional-buddhist-incense.jpg?fit=1800%2C1581&ssl=1", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://m.media-amazon.com/images/I/8106YOV4hrL.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://m.media-amazon.com/images/I/41S9netEKyL._AC_UY580_.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i0.wp.com/handicraftsinnepal.com/wp-content/uploads/2017/06/ankhi-jyal-wooden.jpg?resize=1020%2C735&ssl=1", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFfPJKRrDt108MiOBc-BeQQZizbRJFWjh-wg&s", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://swodeshi.com/wp-content/uploads/2024/05/Dhara-4-600x686.webp", "link" => "#"]);
+                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/77/be/0a/77be0a1cb532e3012ff416e6f36936ee.jpg", "link" => "#"]);
+                    echo renderCard(["imageUrl" => "https://i.pinimg.com/736x/14/d5/75/14d575aef399e9e5819a8aba80ab3893.jpg", "link" => "#"]);
+                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/b5/04/97/b50497b6d5bafd255ed9facae1460ac4.jpg", "link" => "#"]);
+                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/d9/75/33/d97533a4a84039916c28b3d32cfcfb2c.jpg", "link" => "#"]);
+                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/7c/80/a3/7c80a3902c1e1238aa7ed56f762e0500.jpg", "link" => "#"]);
+                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/df/9b/80/df9b80a703566f7ac511550020bc197f.jpg", "link" => "#"]);
                 ?>
             </div>
         </div>

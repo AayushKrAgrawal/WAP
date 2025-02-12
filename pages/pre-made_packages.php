@@ -12,11 +12,11 @@ include '../components/card.php';
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body style="background-color: #F5EFFF;">
+<body style="background-color: #F5EFFF;"> <!-- Test inline style -->
 
 <!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose your Customized Gift</h2>
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Our Packages</h2>
     
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Sidebar Filters -->
