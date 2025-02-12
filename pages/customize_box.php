@@ -12,7 +12,7 @@ include '../components/card.php';
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body class="bg-gray-100">
+<body style="background-color: #F5EFFF;">
 
 <!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
