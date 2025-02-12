@@ -7,43 +7,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <style>
-  body{
+  body {
     background-color: #F5EFFF;
   }
 </style>
-<body class="min-h-screen">
-    <!-- Main heading section -->
-    <div class="text-center py-8">
-        <h1 class="text-3xl font-bold text-gray-800">Customize Your Package</h1>
-        <p class="mt-2 text-gray-600">Select your preferred option below</p>
-    </div>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-4xl text-center">
+        <!-- Main heading section -->
+        <div class="mb-16"> <!-- Increased margin bottom -->
+            <h1 class="text-3xl font-bold text-gray-800">Customize Your Package</h1>
+            <p class="mt-2 text-gray-600">Select your preferred option below</p>
+        </div>
 
-    <!-- Cards section -->
-    <div class="flex items-center justify-center p-4">
-        <div class="w-full max-w-4xl">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Card 1 with heading -->
-                <div class="flex flex-col space-y-4">
-                    <?php
-                    require_once('../components/card.php');
-                    echo renderCard([
-                        'imageUrl' => '../assets/images/customize_box.webp',
-                        'link' => 'packaging.php'
-                    ]);
-                    ?>
-                    <h2 class="text-xl font-semibold text-gray-800 text-center">Packaging</h2>
-                </div>
+        <!-- Cards section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Card 1 -->
+            <div class="flex flex-col items-center space-y-4 w-full pb-6">
+                <a href="packaging.php" class="block w-full">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                        <img class="w-full h-48 object-cover" src="../assets/images/customize_box.webp">
+                    </div>
+                </a>
+                <h2 class="text-xl font-semibold text-gray-800">Packaging</h2>
+            </div>
 
-                <!-- Card 2 with heading -->
-                <div class="flex flex-col space-y-4">
-                    <?php
-                    echo renderCard([
-                        'imageUrl' => '../assets/images/customize_items.webp',
-                        'link' => 'somepage2.php'
-                    ]);
-                    ?>
-                    <h2 class="text-xl font-semibold text-gray-800 text-center">Items</h2>
-                </div>
+            <!-- Card 2 -->
+            <div class="flex flex-col items-center space-y-4 w-full pb-6">
+                <a href="somepage2.php" class="block w-full">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                        <img class="w-full h-48 object-cover" src="../assets/images/customize_items.webp">
+                    </div>
+                </a>
+                <h2 class="text-xl font-semibold text-gray-800">Items</h2>
             </div>
         </div>
     </div>
