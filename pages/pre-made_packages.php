@@ -12,7 +12,7 @@ include '../components/card.php';
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body style="background-color: #F5EFFF;"> <!-- Test inline style -->
+<body style="background-color: #F5EFFF;"> 
 
 <!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -65,14 +65,45 @@ include '../components/card.php';
             
             <!-- Packages Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <?php
-                    echo renderCard(["imageUrl" => "https://i0.wp.com/handicraftsinnepal.com/wp-content/uploads/2020/07/traditional-buddhist-incense.jpg?fit=1800%2C1581&ssl=1", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://m.media-amazon.com/images/I/8106YOV4hrL.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://m.media-amazon.com/images/I/41S9netEKyL._AC_UY580_.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i0.wp.com/handicraftsinnepal.com/wp-content/uploads/2017/06/ankhi-jyal-wooden.jpg?resize=1020%2C735&ssl=1", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFfPJKRrDt108MiOBc-BeQQZizbRJFWjh-wg&s", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://swodeshi.com/wp-content/uploads/2024/05/Dhara-4-600x686.webp", "link" => "#"]);
-                ?>
+            <?php
+              echo renderCard([
+                  "imageUrl" => "https://i0.wp.com/handicraftsinnepal.com/wp-content/uploads/2020/07/traditional-buddhist-incense.jpg?fit=1800%2C1581&ssl=1",
+                  "link" => "#",
+                  "title" => "Buddhist Incense",
+                  "price" => "200"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://m.media-amazon.com/images/I/8106YOV4hrL.jpg",
+                  "link" => "#",
+                  "title" => "Medium sized Buddha Statue",
+                  "price" => "800"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://m.media-amazon.com/images/I/41S9netEKyL._AC_UY580_.jpg",
+                  "link" => "#",
+                  "title" => "Mini Bajra Keyring",
+                  "price" => "120"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://i0.wp.com/handicraftsinnepal.com/wp-content/uploads/2017/06/ankhi-jyal-wooden.jpg?resize=1020%2C735&ssl=1",
+                  "link" => "#",
+                  "title" => "Wooden Sculpture Window",
+                  "price" => "1500"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFfPJKRrDt108MiOBc-BeQQZizbRJFWjh-wg&s",
+                  "link" => "#",
+                  "title" => "Nepali Woven Bowls",
+                  "price" => "700"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://swodeshi.com/wp-content/uploads/2024/05/Dhara-4-600x686.webp",
+                  "link" => "#",
+                  "title" => "Scuplted Dhara",
+                  "price" => "1300"
+              ]);
+            ?>
+
             </div>
         </div>
     </div>
