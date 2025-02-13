@@ -26,6 +26,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
             <a href="manage_users.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">👥 Manage Users</a>
             <a href="manage_products.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📦 Manage Products</a>
             <a href="manage_orders.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📑 Manage Orders</a>
+            <a href="manage_packages.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📑 Manage Packages</a>
+            <a href="manage_boxes.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📑 Manage Boxes</a>
+
             <a href="../pages/login.php" class="block py-2 px-4 rounded-lg bg-red-600 hover:bg-red-500 transition">🚪 Logout</a>
         </nav>
     </aside>
