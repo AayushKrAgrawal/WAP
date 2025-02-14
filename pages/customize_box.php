@@ -65,14 +65,45 @@ include '../components/card.php';
             
             <!-- Packages Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <?php
-                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/77/be/0a/77be0a1cb532e3012ff416e6f36936ee.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i.pinimg.com/736x/14/d5/75/14d575aef399e9e5819a8aba80ab3893.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/b5/04/97/b50497b6d5bafd255ed9facae1460ac4.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/d9/75/33/d97533a4a84039916c28b3d32cfcfb2c.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/7c/80/a3/7c80a3902c1e1238aa7ed56f762e0500.jpg", "link" => "#"]);
-                    echo renderCard(["imageUrl" => "https://i.pinimg.com/236x/df/9b/80/df9b80a703566f7ac511550020bc197f.jpg", "link" => "#"]);
-                ?>
+            <?php
+              echo renderCard([
+                  "imageUrl" => "https://i.pinimg.com/236x/77/be/0a/77be0a1cb532e3012ff416e6f36936ee.jpg",
+                  "link" => "#",
+                  "title" => "Mesh Cloth 1",
+                  "price" => "1000"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://i.pinimg.com/736x/14/d5/75/14d575aef399e9e5819a8aba80ab3893.jpg",
+                  "link" => "#",
+                  "title" => "Mesh Cloth 2",
+                  "price" => "1500"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://i.pinimg.com/236x/b5/04/97/b50497b6d5bafd255ed9facae1460ac4.jpg",
+                  "link" => "#",
+                  "title" => "Basket Box",
+                  "price" => "800"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://i.pinimg.com/236x/d9/75/33/d97533a4a84039916c28b3d32cfcfb2c.jpg",
+                  "link" => "#",
+                  "title" => "Paper Bag",
+                  "price" => "1200"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://i.pinimg.com/236x/7c/80/a3/7c80a3902c1e1238aa7ed56f762e0500.jpg",
+                  "link" => "#",
+                  "title" => "Nanglo Board Box",
+                  "price" => "950"
+              ]);
+              echo renderCard([
+                  "imageUrl" => "https://i.pinimg.com/236x/df/9b/80/df9b80a703566f7ac511550020bc197f.jpg",
+                  "link" => "#",
+                  "title" => "Paper Bag",
+                  "price" => "1100"
+              ]);
+            ?>
+
             </div>
         </div>
     </div>

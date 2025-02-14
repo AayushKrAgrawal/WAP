@@ -34,7 +34,7 @@
 
             <!-- Forgot Password Link -->
             <div class="mb-6 text-right">
-                <a href="#" class="text-sm text-blue-500 hover:underline">Forgot Password?</a>
+                <a href="forget_password.php" class="text-sm text-blue-500 hover:underline">Forgot Password?</a>
             </div>
 
             <!-- Login Button -->
