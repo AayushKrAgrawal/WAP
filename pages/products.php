@@ -9,15 +9,15 @@ include '../includes/db_connect.php'; // Include your database connection file
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Choose Your Box</title>
+  <title>Customized Gifts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body style="background-color: #F5EFFF;">
 
-<!-- Choose Your Box Section -->
+<!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose Your Box</h2>
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose your Customized Gift</h2>
     
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Sidebar Filters -->
@@ -27,18 +27,21 @@ include '../includes/db_connect.php'; // Include your database connection file
                 <h4 class="font-medium text-gray-700 mb-2">Categories</h4>
                 <div class="space-y-2">
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Small Box</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Itar</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Medium Box</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Kafan</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Large Box</span>
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Caps</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox text-blue-600"> <span class="text-gray-700">Food</span>
                     </label>
                 </div>
             </div>
             <div class="mt-4">
-                <h4 class="font-medium text-gray-700 mb-2">Price Range</h4>
+                <h4 class="font-medium text-gray-700 mb-2">Price-range</h4>
                 <div class="flex items-center space-x-2">
                     <input type="text" placeholder="Minimum" class="border px-2 py-1 w-1/2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
                     <input type="text" placeholder="Maximum" class="border px-2 py-1 w-1/2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -46,10 +49,10 @@ include '../includes/db_connect.php'; // Include your database connection file
             </div>
         </aside>
 
-        <!-- Boxes Grid -->
+        <!-- Packages Grid -->
         <div class="w-full md:w-3/4">
             <div class="flex justify-between items-center mb-6">
-                <p class="text-gray-600">Showing Boxes</p>
+                <p class="text-gray-600">Showing Products</p>
                 <div>
                     <label class="text-gray-600 mr-2">Sort By</label>
                     <select class="border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -61,25 +64,25 @@ include '../includes/db_connect.php'; // Include your database connection file
                 </div>
             </div>
             
-            <!-- Boxes Cards -->
+            <!-- Packages Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
-                    // Fetch boxes from database
-                    $query = "SELECT * FROM boxes";
+                    // Fetch products from database
+                    $query = "SELECT * FROM products";
                     $result = mysqli_query($conn, $query);
 
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo renderCard([
                                 "imageUrl" => $row['image_url'], 
-                                "link" => "box_detail.php?id=" . $row['id'], // Pass box ID in URL
-                                "title" => $row['name'], 
+                                "link" => "product_detail.php?id=" . $row['product_id'], // Pass product ID in URL
+                                "title" => $row['product_name'], 
                                 "description" => $row['description'], 
                                 "price" => "" . $row['price']
                             ]);
                         }
                     } else {
-                        echo "<p class='text-gray-600'>No boxes found.</p>";
+                        echo "<p class='text-gray-600'>No products found.</p>";
                     }
                 ?>
             </div>

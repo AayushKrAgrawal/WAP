@@ -110,7 +110,7 @@ $result = $conn->query($sql);
         <h2 class="text-4xl font-bold text-gray-800">Our Products</h2>
         <p class="text-gray-600 mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum consequat lacus ac turpis lacinia, a pretium lectus facilisis.</p>
         
-        <a href="allProducts.php" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition mt-6">Shop Now</a>
+        <a href="products.php" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition mt-6">Shop Now</a>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10">
             <?php
