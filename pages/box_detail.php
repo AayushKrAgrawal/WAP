@@ -1,5 +1,7 @@
 <?php
 session_start();
+ob_start(); // Start output buffering
+
 include('../includes/header.php');
 include('../includes/db_connect.php');
 
@@ -11,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Get the box ID from the URL
 if (isset($_GET['id'])) {
-    $boxId = $_GET['id'];
+    $boxId = intval($_GET['id']); // Sanitize input
 
     // Fetch box details from the 'boxes' table
     $sql = "SELECT * FROM boxes WHERE id = ?";
@@ -37,12 +39,16 @@ if (isset($_GET['id'])) {
 
 // Add to cart logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
-    $boxId = $_POST['box_id'];
-    $quantity = $_POST['quantity'];
-    $userId = $_SESSION['user_id'];
+    $boxId = intval($_POST['boxes_id']);
+    $quantity = intval($_POST['boxes_quantity']);
+    $userId = intval($_SESSION['user_id']);
+
+    if ($quantity < 1) {
+        $quantity = 1;
+    }
 
     // Check if box is already in cart
-    $checkSql = "SELECT * FROM cart WHERE user_id = ? AND box_id = ?";
+    $checkSql = "SELECT * FROM cart WHERE user_id = ? AND boxes_id = ?";
     $stmt = $conn->prepare($checkSql);
     $stmt->bind_param("ii", $userId, $boxId);
     $stmt->execute();
@@ -50,20 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 
     if ($result->num_rows > 0) {
         // If box already in cart, update quantity
-        $updateSql = "UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND box_id = ?";
+        $updateSql = "UPDATE cart SET boxes_quantity = boxes_quantity + ? WHERE user_id = ? AND boxes_id = ?";
         $updateStmt = $conn->prepare($updateSql);
         $updateStmt->bind_param("iii", $quantity, $userId, $boxId);
         $updateStmt->execute();
     } else {
         // If box not in cart, insert new record
-        $insertSql = "INSERT INTO cart (user_id, box_id, quantity) VALUES (?, ?, ?)";
+        $insertSql = "INSERT INTO cart (user_id, boxes_id, boxes_quantity) VALUES (?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
         $insertStmt->bind_param("iii", $userId, $boxId, $quantity);
         $insertStmt->execute();
     }
 
-    echo "<script>alert('Box added to cart!');</script>";
-    echo "<script>window.location.href = 'box_detail.php?id=$boxId';</script>";
+    // Set session flash message and redirect
+    $_SESSION['cart_message'] = 'Added to cart';
+    header("Location: box_detail.php?id=$boxId");
+    exit();
 }
 
 // Fetch related boxes (same category or random boxes)
@@ -83,7 +91,28 @@ $relatedBoxesResult = $relatedStmt->get_result();
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-
+    <!-- Toast Notification -->
+    <?php
+    if (isset($_SESSION['cart_message'])) {
+        echo '
+        <div id="cart-toast" class="fixed top-5 right-5 bg-green-500 text-white py-2 px-4 rounded-md shadow-md transition transform opacity-0">
+            ' . $_SESSION['cart_message'] . '
+        </div>
+        <script>
+            // Show toast notification
+            const cartToast = document.getElementById("cart-toast");
+            cartToast.style.opacity = "1";
+            cartToast.style.transform = "translateY(0)";
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                cartToast.style.opacity = "0";
+                cartToast.style.transform = "translateY(-20px)";
+            }, 3000);
+        </script>';
+        unset($_SESSION['cart_message']);
+    }
+    ?>
     <!-- Box Details Section -->
     <div class="max-w-7xl mx-auto py-10 px-4">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden lg:flex">
@@ -111,13 +140,10 @@ $relatedBoxesResult = $relatedStmt->get_result();
                     </div>
                 </div>
 
-                <!-- Total Price Display -->
-                <p id="total_price" class="text-xl font-bold text-gray-800 mb-6">Total Price: Rs. <?php echo htmlspecialchars($box['price']); ?></p>
-
                 <!-- Add to Cart Form -->
                 <form method="post">
-                    <input type="hidden" name="box_id" value="<?php echo $boxId; ?>">
-                    <input type="hidden" name="quantity" id="hidden_quantity" value="1">
+                    <input type="hidden" name="boxes_id" value="<?php echo $boxId; ?>">
+                    <input type="hidden" name="boxes_quantity" id="hidden_quantity" value="1">
                     <button type="submit" name="add_to_cart" 
                             class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md transition">
                         Add to Cart
@@ -128,39 +154,13 @@ $relatedBoxesResult = $relatedStmt->get_result();
                 <a href="dashboard.php" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition mt-4 inline-block">Back to Box List</a>
             </div>
         </div>
-
-        <!-- More Boxes Section -->
-        <div class="mt-12">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">You may also like</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                <?php while ($relatedBox = $relatedBoxesResult->fetch_assoc()) : ?>
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                        <!-- Make the image clickable and redirect to box details page -->
-                        <a href="box_detail.php?id=<?php echo $relatedBox['id']; ?>">
-                            <img class="w-full h-48 object-cover" src="<?php echo htmlspecialchars($relatedBox['image_url']); ?>" alt="<?php echo htmlspecialchars($relatedBox['name']); ?>">
-                        </a>
-                        <div class="p-4">
-                            <!-- Make the box name clickable and redirect to box details page -->
-                            <a href="box_detail.php?id=<?php echo $relatedBox['id']; ?>" class="text-xl font-semibold text-gray-800 hover:text-indigo-600">
-                                <?php echo htmlspecialchars($relatedBox['name']); ?>
-                            </a>
-                            <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($relatedBox['description']); ?></p>
-                            <p class="text-xl font-bold text-indigo-600">Rs. <?php echo htmlspecialchars($relatedBox['price']); ?></p>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // Quantity Control Logic
         const decrementBtn = document.querySelector('.decrement');
         const incrementBtn = document.querySelector('.increment');
         const quantityInput = document.getElementById('quantity');
         const hiddenQuantityInput = document.getElementById('hidden_quantity');
-        const totalPriceDisplay = document.getElementById('total_price');
         const boxPrice = <?php echo $box['price']; ?>;
 
         decrementBtn.addEventListener('click', () => {
@@ -168,7 +168,6 @@ $relatedBoxesResult = $relatedStmt->get_result();
             if (quantity > 1) {
                 quantityInput.value = quantity - 1;
                 hiddenQuantityInput.value = quantity - 1;
-                totalPriceDisplay.innerHTML = "Total Price: Rs. " + (boxPrice * (quantity - 1));
             }
         });
 
@@ -177,13 +176,11 @@ $relatedBoxesResult = $relatedStmt->get_result();
             if (quantity < 20) {
                 quantityInput.value = quantity + 1;
                 hiddenQuantityInput.value = quantity + 1;
-                totalPriceDisplay.innerHTML = "Total Price: Rs. " + (boxPrice * (quantity + 1));
             }
         });
 
         quantityInput.addEventListener('input', () => {
             hiddenQuantityInput.value = quantityInput.value;
-            totalPriceDisplay.innerHTML = "Total Price: Rs. " + (boxPrice * quantityInput.value);
         });
     </script>
 

@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start(); // Start output buffering
 include('../includes/header.php');
 include('../includes/db_connect.php');
 
@@ -62,8 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
         $insertStmt->execute();
     }
 
-    echo "<script>alert('Package added to cart!');</script>";
-    echo "<script>window.location.href = 'package_detail.php?id=$packageId';</script>";
+    // Set session flash message and redirect
+    $_SESSION['cart_message'] = 'Added to cart';
+    header("Location: preMadePackage_detail.php?id=$packageId");
+    exit();
 }
 
 // Fetch related packages (random or based on category)
@@ -84,37 +87,54 @@ $relatedPackagesResult = $relatedStmt->get_result();
 </head>
 <body class="bg-gray-100">
 
+    <!-- Toast Notification -->
+    <?php
+    if (isset($_SESSION['cart_message'])) {
+        echo '
+        <div id="cart-toast" class="fixed top-5 right-5 bg-green-500 text-white py-2 px-4 rounded-md shadow-md transition transform opacity-0">
+            ' . $_SESSION['cart_message'] . '
+        </div>
+        <script>
+            // Show toast notification
+            const cartToast = document.getElementById("cart-toast");
+            cartToast.style.opacity = "1";
+            cartToast.style.transform = "translateY(0)";
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                cartToast.style.opacity = "0";
+                cartToast.style.transform = "translateY(-20px)";
+            }, 3000);
+        </script>';
+        unset($_SESSION['cart_message']);
+    }
+    ?>
+
     <!-- Package Details Section -->
     <div class="max-w-7xl mx-auto py-10 px-4">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden lg:flex">
-            <!-- Package Image -->
             <div class="lg:w-1/3 p-4">
                 <img class="w-full h-64 object-cover rounded-md transition transform hover:scale-105" 
                      src="<?php echo htmlspecialchars($package['image_url']); ?>" 
                      alt="<?php echo htmlspecialchars($package['title']); ?>" />
             </div>
 
-            <!-- Package Information -->
             <div class="lg:w-2/3 p-6">
                 <h1 class="text-3xl font-bold text-gray-800 mb-4"><?php echo htmlspecialchars($package['title']); ?></h1>
                 <p class="text-gray-600 mb-6"><?php echo htmlspecialchars($package['description']); ?></p>
                 <p class="text-2xl font-bold text-indigo-600 mb-6">Rs. <?php echo htmlspecialchars($package['price']); ?></p>
 
-                <!-- Quantity Control -->
                 <div class="flex items-center mb-6">
                     <span class="text-lg font-semibold mr-4">Quantity:</span>
                     <div class="flex items-center space-x-2">
                         <button type="button" class="decrement bg-gray-300 px-3 py-1 rounded-md hover:bg-gray-400 transition">-</button>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20" 
-                               class="w-16 text-center border border-gray-300 rounded-md p-2">
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20" class="w-16 text-center border border-gray-300 rounded-md p-2">
                         <button type="button" class="increment bg-gray-300 px-3 py-1 rounded-md hover:bg-gray-400 transition">+</button>
                     </div>
                 </div>
 
-                <!-- Total Price Display -->
                 <p id="total_price" class="text-xl font-bold text-gray-800 mb-6">Total Price: Rs. <?php echo htmlspecialchars($package['price']); ?></p>
 
-                <!-- Add to Cart Form -->
                 <form method="post">
                     <input type="hidden" name="package_id" value="<?php echo $packageId; ?>">
                     <input type="hidden" name="quantity" id="hidden_quantity" value="1">
@@ -124,36 +144,12 @@ $relatedPackagesResult = $relatedStmt->get_result();
                     </button>
                 </form>
 
-                <!-- Back to Products -->
                 <a href="preMadePackages.php" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition mt-4 inline-block">Back to Package List</a>
             </div>
         </div>
-
-        <!-- More Packages Section -->
-        <div class="mt-12">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">You may also like</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                <?php while ($relatedPackage = $relatedPackagesResult->fetch_assoc()) : ?>
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                        <a href="package_detail.php?id=<?php echo $relatedPackage['id']; ?>">
-                            <img class="w-full h-48 object-cover" src="<?php echo htmlspecialchars($relatedPackage['image_url']); ?>" alt="<?php echo htmlspecialchars($relatedPackage['title']); ?>">
-                        </a>
-                        <div class="p-4">
-                            <a href="package_detail.php?id=<?php echo $relatedPackage['id']; ?>" class="text-xl font-semibold text-gray-800 hover:text-indigo-600">
-                                <?php echo htmlspecialchars($relatedPackage['title']); ?>
-                            </a>
-                            <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($relatedPackage['description']); ?></p>
-                            <p class="text-xl font-bold text-indigo-600">Rs. <?php echo htmlspecialchars($relatedPackage['price']); ?></p>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // Quantity Control Logic
         const decrementBtn = document.querySelector('.decrement');
         const incrementBtn = document.querySelector('.increment');
         const quantityInput = document.getElementById('quantity');

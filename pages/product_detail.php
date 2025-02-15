@@ -1,5 +1,8 @@
 <?php
+
+
 session_start();
+ob_start(); // Start output buffering
 include('../includes/header.php');
 include('../includes/db_connect.php');
 
@@ -50,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 
     if ($result->num_rows > 0) {
         // If product already in cart, update quantity
-        $updateSql = "UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?";
+        $updateSql = "UPDATE cart SET product_quantity = product_quantity + ? WHERE user_id = ? AND product_id = ?";
         $updateStmt = $conn->prepare($updateSql);
         $updateStmt->bind_param("iii", $quantity, $userId, $productId);
         $updateStmt->execute();
@@ -62,8 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
         $insertStmt->execute();
     }
 
-    echo "<script>alert('Product added to cart!');</script>";
-    echo "<script>window.location.href = 'product_detail.php?id=$productId';</script>";
+    // Set session flash message and redirect
+    $_SESSION['cart_message'] = 'Added to cart';
+    header("Location: product_detail.php?id=$productId");
+    exit();
 }
 
 // Fetch related products (same category or random products)
@@ -84,7 +89,28 @@ $relatedProductsResult = $relatedStmt->get_result();
 </head>
 <body class="bg-gray-100">
 
-    
+    <!-- Toast Notification -->
+    <?php
+    if (isset($_SESSION['cart_message'])) {
+        echo '
+        <div id="cart-toast" class="fixed top-5 right-5 bg-green-500 text-white py-2 px-4 rounded-md shadow-md transition transform opacity-0">
+            ' . $_SESSION['cart_message'] . '
+        </div>
+        <script>
+            // Show toast notification
+            const cartToast = document.getElementById("cart-toast");
+            cartToast.style.opacity = "1";
+            cartToast.style.transform = "translateY(0)";
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                cartToast.style.opacity = "0";
+                cartToast.style.transform = "translateY(-20px)";
+            }, 3000);
+        </script>';
+        unset($_SESSION['cart_message']);
+    }
+    ?>
 
     <!-- Product Details Section -->
     <div class="max-w-7xl mx-auto py-10 px-4">

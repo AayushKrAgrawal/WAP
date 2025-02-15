@@ -41,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmtUpdate->execute();
         } elseif ($row['boxes_id'] > 0) {
             // Update box quantity
-            $sqlUpdate = "UPDATE cart SET product_quantity = ? WHERE cart_id = ? AND user_id = ?";
+            $sqlUpdate = "UPDATE cart SET boxes_quantity = ? WHERE cart_id = ? AND user_id = ?";
             $stmtUpdate = $conn->prepare($sqlUpdate);
             $stmtUpdate->bind_param("iii", $quantity, $cartId, $userId);
             $stmtUpdate->execute();
         } elseif ($row['package_id'] > 0) {
             // Update package quantity
-            $sqlUpdate = "UPDATE cart SET product_quantity = ? WHERE cart_id = ? AND user_id = ?";
+            $sqlUpdate = "UPDATE cart SET package_quantity = ? WHERE cart_id = ? AND user_id = ?";
             $stmtUpdate = $conn->prepare($sqlUpdate);
             $stmtUpdate->bind_param("iii", $quantity, $cartId, $userId);
             $stmtUpdate->execute();

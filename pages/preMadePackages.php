@@ -17,7 +17,7 @@ include '../includes/db_connect.php'; // Include your database connection file
 
 <!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose Your Pre Made Packages</h2>
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Choose Our Pre-Made Packages</h2>
     
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Sidebar Filters -->

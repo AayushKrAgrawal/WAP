@@ -47,12 +47,12 @@ $totalCost = 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment</title>
+    <title>Checkout</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 font-sans">
     <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-extrabold text-gray-800 mb-8">Payment</h1>
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-8">Checkout</h1>
 
         <?php if ($address): ?>
             <div class="bg-white shadow-md rounded-lg p-6 mb-8">
@@ -71,8 +71,7 @@ $totalCost = 0;
             </div>
         <?php endif; ?>
 
-        <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-bold text-gray-800">Order Summary</h2>
+        <div class="shadow-md rounded-lg overflow-hidden">
             <ul class="divide-y divide-gray-200">
                 <?php while ($item = $resultCart->fetch_assoc()): ?>
                     <?php
@@ -113,34 +112,13 @@ $totalCost = 0;
             <div class="bg-gray-100 px-4 py-6 sm:px-6">
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-bold text-gray-800">Total: Rs. <?php echo number_format($totalCost, 2); ?></h2>
+                    <form method="post" action="payment.php">
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:shadow-outline">
+                            Proceed to Payment
+                        </button>
+                    </form>
                 </div>
             </div>
-        </div>
-
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-xl font-bold text-gray-800">Payment Options</h2>
-            <form action="process_payment.php" method="post">
-                <div class="mt-6 space-y-4">
-                    <label class="block">
-                        <input type="radio" name="payment_method" value="credit_card" class="form-radio text-blue-600">
-                        <span class="ml-2 text-gray-700">Credit Card</span>
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="payment_method" value="paypal" class="form-radio text-blue-600">
-                        <span class="ml-2 text-gray-700">PayPal</span>
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="payment_method" value="cash_on_delivery" class="form-radio text-blue-600">
-                        <span class="ml-2 text-gray-700">Cash on Delivery</span>
-                    </label>
-                </div>
-                <div class="mt-6">
-                    <button type="button" onclick="window.location.href='order_received.php';" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md">
-             Confirm Payment
-                </button>
-                </div>
-
-            </form>
         </div>
     </div>
 </body>
