@@ -1,6 +1,12 @@
 <?php
+// Start the session
 session_start();
-session_destroy(); // Destroy the session
-header('Location: login.php');
-exit;
+
+// Destroy all session data
+session_unset();
+session_destroy();
+
+// Redirect to login page
+header("Location: /hamroPratibha/pages/login.php");
+exit();
 ?>
