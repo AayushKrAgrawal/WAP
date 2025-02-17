@@ -30,7 +30,7 @@
 </head>
 <body class="bg-custom-bg">
     <!-- Image Slider with Navigation on Top -->
-    <div class="relative w-full h-[800px] overflow-hidden">
+    <div class="relative w-full h-[600px] overflow-hidden">
         <!-- Navigation Bar Overlay with Padding -->
         <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-20" style="padding-left: 8rem; padding-right: 8rem;">
             <div class="text-2xl font-bold">
@@ -122,19 +122,25 @@
     </div>
 
     <!-- About Us Section  -->
-    <div class="py-16 px-4 md:px-20">
+    <div class="py-16 px-4 md:px-20 transition-transform transform hover:scale-105 duration-300 ease-in-out">
         <div class="max-w-7xl mx-auto flex items-center justify-between space-x-8">
             <!-- Text on the left -->
             <div class="w-1/2">
                 <h2 class="text-4xl font-bold text-[#B82132] mb-6">About Us</h2>
                 <p class="text-lg text-gray-600 mb-8">
-                    At Hamro Pratibha, we're dedicated to celebrating Nepal's rich craftsmanship through curated and customizable gift boxes. Our journey began with a vision to bring Nepali artistry to the world, offering unique handpicked products that reflect Nepal's cultural heritage.
+                At Hamro Pratibha, we are dedicated to celebrating Nepal’s rich craftsmanship through thoughtfully curated and customizable gift boxes. Our mission is to share the beauty of Nepali artistry with the world while supporting local artisans and promoting sustainable practices.
+
+Each of our gift boxes combines traditional Nepali crafts, such as handwoven pashmina, intricate woodwork, and colorful pottery, with modern aesthetics. We offer two unique gift experiences: pre-curated boxes for those looking for a ready-made gift, and customizable options that allow customers to select packaging and items to create a personalized gift.
+
+Our commitment to ethical sourcing ensures that every product we offer is crafted with care and respect for the environment. By empowering local artisans, we preserve Nepal’s cultural heritage while making it accessible to a global audience.
+
+At Hamro Pratibha, we believe gifting is about connection, and we aim to provide an exceptional experience that brings joy and meaning to every occasion
                 </p>
             </div>
             <!-- Image on the right -->
             <div class="w-1/2">
                <!-- Image with fade-in animation -->
-               <img src="../assets/images/aboutUs.jpg" alt="About Us" class="image-cover rounded-lg shadow-lg transition-transform transform hover:scale-105">
+               <img src="../assets/images/aboutUs.jpg" alt="About Us" class="image-cover rounded-lg shadow-lg ">
             </div>
         </div>
     </div>
