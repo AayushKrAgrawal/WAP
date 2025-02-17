@@ -42,7 +42,7 @@ include '../includes/header.php';
             </a>
 
             <!-- Choose Your Gifts Card -->
-            <a href="chooseGifts.php" class="card block bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
+            <a href="products.php" class="card block bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
                 <img src="https://i.pinimg.com/236x/df/9b/80/df9b80a703566f7ac511550020bc197f.jpg" 
                      alt="Choose Your Gifts" 
                      class="w-full h-80 object-cover transition-transform duration-500">

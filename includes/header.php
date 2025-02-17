@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,9 +30,9 @@ session_start();
                 <div class="hidden md:flex space-x-8">
                     <a href="dashboard.php" class="text-gray-700 hover:text-indigo-600 transition">Home</a>
                     <a href="products.php" class="text-gray-700 hover:text-indigo-600 transition">Products</a>
-                    <a href="about.php" class="text-gray-700 hover:text-indigo-600 transition">About Us</a>
-                    <a href="return_policy.php" class="text-gray-700 hover:text-indigo-600 transition">Return & Refund Policy</a>
-                    <a href="contact.php" class="text-gray-700 hover:text-indigo-600 transition">Contact Us</a>
+                    <a href="#" class="text-gray-700 hover:text-indigo-600 transition">About Us</a>
+                    <a href="#" class="text-gray-700 hover:text-indigo-600 transition">Return & Refund Policy</a>
+                    <a href="#" class="text-gray-700 hover:text-indigo-600 transition">Contact Us</a>
                 </div>
 
                 <!-- Right Section: Search, Cart, Profile, Logout -->

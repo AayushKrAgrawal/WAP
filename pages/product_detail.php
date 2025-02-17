@@ -1,5 +1,9 @@
 <?php
+
+
 session_start();
+ob_start(); // Start output buffering
+include('../includes/header.php');
 include('../includes/db_connect.php');
 
 // Check if the user is logged in
@@ -49,21 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 
     if ($result->num_rows > 0) {
         // If product already in cart, update quantity
-        $updateSql = "UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?";
+        $updateSql = "UPDATE cart SET product_quantity = product_quantity + ? WHERE user_id = ? AND product_id = ?";
         $updateStmt = $conn->prepare($updateSql);
         $updateStmt->bind_param("iii", $quantity, $userId, $productId);
         $updateStmt->execute();
     } else {
         // If product not in cart, insert new record
-        $insertSql = "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)";
+        $insertSql = "INSERT INTO cart (user_id, product_id, product_quantity) VALUES (?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
         $insertStmt->bind_param("iii", $userId, $productId, $quantity);
         $insertStmt->execute();
     }
 
-    echo "<script>alert('Product added to cart!');</script>";
-    echo "<script>window.location.href = 'product_detail.php?id=$productId';</script>";
+    // Set session flash message and redirect
+    $_SESSION['cart_message'] = 'Added to cart';
+    header("Location: product_detail.php?id=$productId");
+    exit();
 }
+
+// Fetch related products (same category or random products)
+$relatedProductsSql = "SELECT * FROM products WHERE product_id != ? LIMIT 4";
+$relatedStmt = $conn->prepare($relatedProductsSql);
+$relatedStmt->bind_param("i", $productId);
+$relatedStmt->execute();
+$relatedProductsResult = $relatedStmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -76,19 +89,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 </head>
 <body class="bg-gray-100">
 
-    <!-- Navbar -->
-    <nav class="bg-indigo-600 p-4 shadow-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="text-white text-xl font-semibold">
-                <a href="dashboard.php">Product Dashboard</a>
-            </div>
-            <div class="space-x-6 text-white">
-                <a href="products.php" class="hover:text-indigo-300 transition">Products</a>
-                <a href="cart.php" class="hover:text-indigo-300 transition">Cart</a>
-                <a href="logout.php" class="hover:text-indigo-300 transition">Logout</a>
-            </div>
+    <!-- Toast Notification -->
+    <?php
+    if (isset($_SESSION['cart_message'])) {
+        echo '
+        <div id="cart-toast" class="fixed top-5 right-5 bg-green-500 text-white py-2 px-4 rounded-md shadow-md transition transform opacity-0">
+            ' . $_SESSION['cart_message'] . '
         </div>
-    </nav>
+        <script>
+            // Show toast notification
+            const cartToast = document.getElementById("cart-toast");
+            cartToast.style.opacity = "1";
+            cartToast.style.transform = "translateY(0)";
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                cartToast.style.opacity = "0";
+                cartToast.style.transform = "translateY(-20px)";
+            }, 3000);
+        </script>';
+        unset($_SESSION['cart_message']);
+    }
+    ?>
 
     <!-- Product Details Section -->
     <div class="max-w-7xl mx-auto py-10 px-4">
@@ -117,6 +139,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                     </div>
                 </div>
 
+                <!-- Total Price Display -->
+                <p id="total_price" class="text-xl font-bold text-gray-800 mb-6">Total Price: Rs. <?php echo htmlspecialchars($product['price']); ?></p>
+
                 <!-- Add to Cart Form -->
                 <form method="post">
                     <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
@@ -131,6 +156,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                 <a href="dashboard.php" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition mt-4 inline-block">Back to Product List</a>
             </div>
         </div>
+
+        <!-- More Products Section -->
+        <div class="mt-12">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">You may also like</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+        <?php while ($relatedProduct = $relatedProductsResult->fetch_assoc()) : ?>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <!-- Make the image clickable and redirect to product details page -->
+                <a href="product_detail.php?id=<?php echo $relatedProduct['product_id']; ?>">
+                    <img class="w-full h-48 object-cover" src="<?php echo htmlspecialchars($relatedProduct['image_url']); ?>" alt="<?php echo htmlspecialchars($relatedProduct['product_name']); ?>">
+                </a>
+                <div class="p-4">
+                    <!-- Make the product name clickable and redirect to product details page -->
+                    <a href="product_detail.php?id=<?php echo $relatedProduct['product_id']; ?>" class="text-xl font-semibold text-gray-800 hover:text-indigo-600">
+                        <?php echo htmlspecialchars($relatedProduct['product_name']); ?>
+                    </a>
+                    <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($relatedProduct['description']); ?></p>
+                    <p class="text-xl font-bold text-indigo-600">Rs. <?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                </div>
+            </div>
+        <?php endwhile; ?>
+    </div>
+</div>
+
     </div>
 
     <script>
@@ -139,12 +188,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
         const incrementBtn = document.querySelector('.increment');
         const quantityInput = document.getElementById('quantity');
         const hiddenQuantityInput = document.getElementById('hidden_quantity');
+        const totalPriceDisplay = document.getElementById('total_price');
+        const productPrice = <?php echo $product['price']; ?>;
 
         decrementBtn.addEventListener('click', () => {
             let quantity = parseInt(quantityInput.value);
             if (quantity > 1) {
                 quantityInput.value = quantity - 1;
                 hiddenQuantityInput.value = quantity - 1;
+                totalPriceDisplay.innerHTML = "Total Price: Rs. " + (productPrice * (quantity - 1));
             }
         });
 
@@ -153,11 +205,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
             if (quantity < 20) {
                 quantityInput.value = quantity + 1;
                 hiddenQuantityInput.value = quantity + 1;
+                totalPriceDisplay.innerHTML = "Total Price: Rs. " + (productPrice * (quantity + 1));
             }
         });
 
         quantityInput.addEventListener('input', () => {
             hiddenQuantityInput.value = quantityInput.value;
+            totalPriceDisplay.innerHTML = "Total Price: Rs. " + (productPrice * quantityInput.value);
         });
     </script>
 

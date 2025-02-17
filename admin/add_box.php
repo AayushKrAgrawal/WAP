@@ -11,6 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $description = $_POST['description'];
+    $price = $_POST['price'];  // New price field
 
     // Image upload logic
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
@@ -30,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Move the uploaded image to the assets/images folder
             if (move_uploaded_file($image_tmp, $image_path)) {
-                // Insert into the database
-                $sql = "INSERT INTO boxes (name, description, image_url) VALUES ('$name', '$description', '$image_path')";
+                // Insert into the database (including the price)
+                $sql = "INSERT INTO boxes (name, description, image_url, price) VALUES ('$name', '$description', '$image_path', '$price')";
 
                 if ($conn->query($sql) === TRUE) {
                     header("Location: manage_boxes.php");
@@ -80,6 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="mb-4">
                 <label for="description" class="block text-lg font-medium text-gray-700">Box Description</label>
                 <textarea name="description" id="description" class="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+            </div>
+
+            <!-- Price Field -->
+            <div class="mb-4">
+                <label for="price" class="block text-lg font-medium text-gray-700">Price</label>
+                <input type="number" name="price" id="price" class="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" step="0.01" required>
             </div>
 
             <!-- Image Upload Field -->
