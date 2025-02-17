@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 15, 2025 at 05:44 PM
+-- Generation Time: Feb 17, 2025 at 04:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,17 @@ CREATE TABLE `boxes` (
 --
 
 INSERT INTO `boxes` (`id`, `name`, `description`, `image_url`, `price`) VALUES
-(1, 'Small Box ', 'small in size ', '../assets/images/67ae22969f756.jpg', 500.00);
+(1, 'Small Box ', 'small in size ', '../assets/images/67ae22969f756.jpg', 500.00),
+(2, 'Paper Packaging  ', 'A brown paper wrapping that gives off a rustic, natural vibe. It’s finished off with a delicate flower, adding a simple yet thoughtful touch. Perfect for wrapping gifts or items with a down-to-earth, charming look.', '../assets/images/67b34e4171b0c.jpg', 50.00),
+(3, 'Clothed Box Packaging ', 'A tightly knotted cloth packaging with a clean and secure finish, layered over a paper box underneath. A small flower is added for that perfect finishing touch, giving it a simple yet charming and elegant look. ', '../assets/images/67b34ee632d7d.jpg', 450.00),
+(4, 'Triangle Box Packaging', 'A triangle-shaped packaging that stands out with its unique design. It\'s neatly tied with a ribbon, with a flower added for a charming touch. Simple, stylish, and perfect for gifting or special occasions.', '../assets/images/67b34fbd7065e.jpg', 90.00),
+(5, 'Bamboo box packaging ', 'A bamboo box packaging that brings a natural, eco-friendly touch to your gift. The box is beautifully decorated with ribbons and delicate flowers, adding a soft and charming finish. Perfect for presenting gifts in a way that\'s both stylish and sustainable', '../assets/images/67b34fd43e075.jpg', 300.00),
+(6, 'Zigzag Pattern Packaging ', 'A rectangular-shaped box featuring a subtle zigzag pattern for a touch of texture and style. A small flower is tied to it with a ribbon, adding a delicate and charming detail. Simple yet eye-catching, this box is perfect for gifting or special occasions.', '../assets/images/67b34febc91a6.jpg', 90.00),
+(7, 'Roll Packaging ', 'A rolled cloth packaging designed to resemble a chocolate or candy wrap. It\'s neatly tied with ribbons on both ends, giving it a charming and playful look. Simple yet stylish, this packaging is great for gifts, small accessories, or special occasions.', '../assets/images/67b35000cb0bb.jpg', 250.00),
+(8, 'Simple brown box packaging ', 'A simple, rectangular box with a clean and minimal design. It\'s wrapped with a neat ribbon, with a small flower tied to it for a subtle, decorative touch. Perfect for gifting, it keeps things stylish without being over-the-top', '../assets/images/67b3501885a65.jpg', 150.00),
+(9, 'Pouch only packaging ', 'A durable and stylish pouch made from high-quality fabric, designed for secure and elegant packaging. This cloth pouch provides a protective and reusable solution for storing and presenting various items, making it ideal for gifts, accessories, and other small essentials.', '../assets/images/67b3502c921ed.jpg', 60.00),
+(10, 'Cloth Pouch Packaging ', 'A beautifully designed gift box that opens to reveal a stylish cloth pouch inside. Inside, the soft and durable fabric pouch adds an extra layer of protection and charm, making it perfect for presenting delicate or valuable items. This thoughtful packaging enhances the gifting experience, combining elegance with functionality.', '../assets/images/67b350b514ed8.jpg', 250.00),
+(11, 'Square box packaging  ', 'A beautifully crafted, square-shaped box designed for elegance and charm. It features a delicate ribbon tied gracefully around it, adding a touch of sophistication. A small, decorative charm is attached to the ribbon, enhancing its aesthetic appeal and making it perfect for gifting or special occasions.', '../assets/images/67b350c6a3ce8.jpg', 150.00);
 
 -- --------------------------------------------------------
 
@@ -65,12 +75,11 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`cart_id`, `user_id`, `product_id`, `product_quantity`, `added_at`, `package_id`, `boxes_id`, `package_quantity`, `boxes_quantity`) VALUES
-(40, 1, 31, 3, '2025-02-15 16:26:35', NULL, NULL, NULL, NULL),
-(41, 1, 12, 2, '2025-02-15 16:31:26', NULL, NULL, NULL, NULL),
 (42, 7, NULL, NULL, '2025-02-15 16:39:51', 3, NULL, 2, NULL),
 (43, 7, NULL, NULL, '2025-02-15 16:39:59', NULL, 1, NULL, 4),
 (44, 7, 12, 2, '2025-02-15 16:40:10', NULL, NULL, NULL, NULL),
-(46, 7, 15, 3, '2025-02-15 16:40:18', NULL, NULL, NULL, NULL);
+(46, 7, 15, 3, '2025-02-15 16:40:18', NULL, NULL, NULL, NULL),
+(49, 1, NULL, NULL, '2025-02-17 15:06:22', NULL, 9, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -121,7 +130,12 @@ CREATE TABLE `packages` (
 --
 
 INSERT INTO `packages` (`id`, `title`, `price`, `image_url`, `description`, `created_at`) VALUES
-(3, 'First Package ', 5000.00, '../assets/images/67ae239be0799.jpg', 'very good ', '2025-02-13 16:53:47');
+(4, 'Sajilo Gift Box (सजिलो)', 500.00, '../assets/images/67b353fea865c.webp', 'Sajilo means easy, and this box offers a curated selection of simple, thoughtful gifts that bring comfort and a touch of Nepali culture to everyday life. From local snacks to sustainable, practical items, it\'s the perfect pick-me-up for anyone looking to experience Nepal in a meaningful way.\r\n\r\nPackaging: Simple Paper Pouch Packaging (Rs. 50) \r\n• Masala Peanuts (Rs. 150)\r\nThese crunchy peanuts are coated in a flavorful blend of spices, perfect for snacking during a busy day. A savory and spicy treat!\r\n• Handmade Lokta Paper Notebook (Rs. 200) \r\nCrafted from traditional Nepali Lokta paper, this notebook features a soft, durable cover and blank pages, making it ideal for journaling, sketching, or note-taking.\r\n• Herbal Lip Balm (Rs. 100) \r\nA soothing lip balm made with organic ingredients such as beeswax and essential oils, providing moisture and protection for your lips.\r\n', '2025-02-17 15:21:34'),
+(5, 'Mitho Gift Box (मिठो) ', 1000.00, '../assets/images/67b3541e420de.jpg', 'Mitho means sweet, and this box is a celebration of life\'s little luxuries! Filled with relaxing and indulgent gifts, it offers a blend of cultural and wellness items that give you a taste of Nepali luxury. Perfect for those who enjoy handmade goods and traditional treats.\r\nPackaging: Handmade Lokta Paper Box (Rs. 150) \r\n• Organic Honey (Rs. 300) \r\nHarvested from the Himalayan region, this organic honey is rich in flavor, perfect for tea or as a natural sweetener in your favorite recipes.\r\n• Handwoven Cotton Shawl (Rs. 400) \r\nSoft and cozy, this traditional cotton shawl is handwoven with intricate patterns, adding warmth and elegance to any outfit.\r\n• Clay Aroma Diffuser (Rs. 150) \r\nThis handmade diffuser uses essential oils to create a soothing atmosphere in your home, helping you relax and unwind after a busy day.\r\n• Handmade Ceramic Cup (Rs. 200) \r\nA beautifully crafted ceramic cup, perfect for enjoying your favorite tea or coffee. The unique design adds a touch of Nepali artistry to your collection.\r\n', '2025-02-17 15:22:06'),
+(6, 'Sampanna Gift Box (सम्पन्न) ', 1500.00, '../assets/images/67b3543c1ff1a.jpg', 'Sampanna means affluent, and this box is crafted to make you feel just that! Filled with cultural treasures, spiritual artifacts, and wellness essentials, it’s the perfect gift for those who appreciate luxury and Nepal’s rich traditions. Ideal for anyone who loves indulging in the finer things in life.\r\nPackaging: Bamboo Box Packaging (Rs. 300) \r\n• Special Thamel Blend Coffee (Rs. 400) \r\nA special blend of coffee beans sourced from the foothills of the Himalayas, offering a rich, full-bodied flavor that’s perfect for any time of day.\r\n• Dhaka Handwoven Scarf (Rs. 600) \r\nThis premium scarf is woven with traditional Dhaka fabric, showcasing exquisite craftsmanship and adding a touch of elegance to any wardrobe.\r\n• Scented Candle Set (Rs. 200) \r\nA set of aromatic candles made from natural wax, designed to create a calming atmosphere in your home with their soothing fragrances.\r\n• Nepali Herbal Bath Salt (Rs. 150) \r\nInfused with Himalayan salts and essential oils, this bath salt helps to detoxify and relax the body after a long day.\r\n', '2025-02-17 15:22:36'),
+(7, 'Paramparik Gift Box (पारम्परिक) ', 2000.00, '../assets/images/67b3545a2da2d.jpg', 'Paramparik means tradition, and this box offers a luxurious blend of cultural and artisanal items that showcase the essence of Nepali heritage and craftsmanship. Perfect for gifting or indulging yourself in a premium Nepali experience, it’s a true celebration of tradition and luxury.\r\nPackaging: Embroidered Fabric Box (Rs. 400) \r\n• Yak Cheese (Rs. 600) \r\nA unique and flavorful cheese made from yak milk, a traditional delicacy from the Himalayas. Rich in nutrients, it’s a delicacy enjoyed by many in Nepal.\r\n• Prayer Wheel (Rs. 700) \r\nA beautifully crafted prayer wheel made from brass, often used in Tibetan Buddhist practice, and believed to bring blessings and good karma.\r\n• Wooden Incense Burner (Rs. 300) \r\nA traditional wooden incense holder designed to burn incense sticks, filling the room with soothing fragrances and promoting tranquility.\r\n• Himalayan Essential Oils Set (Rs. 200) \r\nA set of essential oils derived from Himalayan plants, ideal for aromatherapy and relaxation.\r\n', '2025-02-17 15:23:06'),
+(8, 'Sanskriti Gift Box (संस्कृति)', 2500.00, '../assets/images/67b354743da31.jpg', 'Sanskriti represents culture, and this box is for those who appreciate the blend of tradition and luxury. It combines exquisite Nepali craftsmanship with wellness and culinary delights, offering a luxurious selection of traditional art, handcrafted items, and wellness products. Perfect for those who cherish fine craftsmanship and the spiritual essence of Nepali heritage.\r\n\r\nPackaging: Wooden Box Packaging (Rs. 500) \r\n• Mini Hand-Painted Thangka Art (Rs. 800) \r\nA miniature version of a traditional Thangka painting, this artwork reflects intricate Buddhist designs, believed to bring peace and tranquility to your surroundings.\r\n• Brass Ganesha Statue (Rs. 700) \r\nA beautifully crafted brass statue of Lord Ganesha, the remover of obstacles, making it a perfect addition to any home or temple space.\r\n• Bamboo and Copper Incense Holder (Rs. 400) \r\nA natural bamboo incense holder, paired with a copper base, designed to hold incense sticks while allowing their aroma to fill your space.\r\n• Handmade Cotton Shawl (Rs. 600) \r\nSoft and elegant, this shawl is handwoven from cotton, perfect for both everyday use and formal occasions, showcasing Nepali textile artistry.\r\n', '2025-02-17 15:23:32'),
+(9, 'Maharani Gift Box (महारानी) ', 3000.00, '../assets/images/67b35499a8cd7.jpg', 'The Maharani box is a luxurious, royal-inspired gift featuring gourmet treats, skincare, and cultural artifacts. Blending opulence, wellness, and Nepali craftsmanship, it\'s perfect for those who appreciate exquisite, handcrafted items and the elegance of Nepali royalty.\r\nPackaging: Golden Box Packaging (Rs. 600)\r\n • Nepali Gold-Plated Necklace (Rs. 1000) \r\nA beautifully crafted gold-plated necklace, featuring traditional Nepali designs, perfect for adding a regal touch to any outfit.\r\n• Copper and Brass Puja Thali (Rs. 800) \r\nA traditional puja thali (plate) made from copper and brass, used for religious rituals, adding an authentic spiritual touch to your prayers.\r\n• Handcrafted Wooden Mirror (Rs. 400) \r\nA decorative wooden mirror with intricate carvings, ideal for both functionality and adding a cultural touch to your home decor.\r\n• Aromatic Incense Set (Rs. 400) \r\nA premium collection of Nepali incense, designed to fill your space with a rich and calming fragrance, ideal for meditation or relaxation.\r\n', '2025-02-17 15:24:09');
 
 -- --------------------------------------------------------
 
@@ -293,13 +307,13 @@ ALTER TABLE `user_addresses`
 -- AUTO_INCREMENT for table `boxes`
 --
 ALTER TABLE `boxes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -311,7 +325,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `packages`
 --
 ALTER TABLE `packages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `products`
