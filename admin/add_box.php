@@ -9,15 +9,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Get POST data and sanitize input
     $name = $_POST['name'];
     $description = $_POST['description'];
-    $price = $_POST['price'];  // New price field
+    $price = $_POST['price'];
 
     // Image upload logic
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image_name = $_FILES['image']['name'];
         $image_tmp = $_FILES['image']['tmp_name'];
-        $image_size = $_FILES['image']['size'];
         $image_ext = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
 
         // Set the allowed image extensions
@@ -25,18 +25,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Check if the uploaded file is a valid image
         if (in_array($image_ext, $allowed_extensions)) {
-            // Define the upload directory
+            // Define the upload directory and generate a unique filename
             $upload_dir = '../assets/images/';
             $image_path = $upload_dir . uniqid() . '.' . $image_ext;
 
             // Move the uploaded image to the assets/images folder
             if (move_uploaded_file($image_tmp, $image_path)) {
-                // Insert into the database (including the price)
-                $sql = "INSERT INTO boxes (name, description, image_url, price) VALUES ('$name', '$description', '$image_path', '$price')";
-
-                if ($conn->query($sql) === TRUE) {
-                    header("Location: manage_boxes.php");
-                    exit();
+                
+                // Using Prepared Statement to Insert Data
+                $stmt = $conn->prepare("INSERT INTO boxes (name, description, image_url, price) VALUES (?, ?, ?, ?)");
+                if ($stmt) {
+                    // Bind parameters (s = string, i = integer)
+                    $stmt->bind_param("sssi", $name, $description, $image_path, $price);
+                    
+                    // Execute the statement
+                    if ($stmt->execute()) {
+                        // Redirect to manage boxes page on success
+                        header("Location: manage_boxes.php");
+                        exit();
+                    } else {
+                        $error = "Error: " . $stmt->error;
+                    }
+                    // Close the statement
+                    $stmt->close();
                 } else {
                     $error = "Error: " . $conn->error;
                 }

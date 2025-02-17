@@ -10,11 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image_name = $_FILES['image']['name'];
         $image_tmp = $_FILES['image']['tmp_name'];
-        $image_size = $_FILES['image']['size'];
         $image_ext = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
 
         // Set the allowed image extensions
-        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif','webp'];
 
         // Check if the uploaded file is a valid image
         if (in_array($image_ext, $allowed_extensions)) {
@@ -24,12 +23,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Move the uploaded image to the assets/images folder
             if (move_uploaded_file($image_tmp, $image_path)) {
-                // Insert into the database
-                $query = "INSERT INTO packages (title, price, image_url, description) VALUES ('$title', '$price', '$image_path', '$description')";
-                mysqli_query($conn, $query);
+                // Using Prepared Statement to Insert Data
+                $stmt = $conn->prepare("INSERT INTO packages (title, price, image_url, description) VALUES (?, ?, ?, ?)");
 
-                header('Location: manage_packages.php');
-                exit();
+                if ($stmt) {
+                    // Bind parameters (s = string, i = integer)
+                    $stmt->bind_param("siss", $title, $price, $image_path, $description);
+
+                    // Execute the statement
+                    if ($stmt->execute()) {
+                        header('Location: manage_packages.php');
+                        exit();
+                    } else {
+                        $error = "Database error: " . $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $error = "Failed to prepare statement: " . $conn->error;
+                }
             } else {
                 $error = "Error uploading image.";
             }
@@ -96,5 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </html>
 
 <?php
-mysqli_close($conn);
+// Close the database connection
+$conn->close();
 ?>
