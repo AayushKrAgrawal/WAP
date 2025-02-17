@@ -15,20 +15,20 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 
 // Fetch the user's current details
-$sql = "SELECT * FROM users WHERE user_id = ?";
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("i", $userId);
+try {
+    $sql = "SELECT * FROM users WHERE user_id = :user_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
     $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
+
+    if ($stmt->rowCount() > 0) {
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
     } else {
         echo "<p>User not found.</p>";
         exit();
     }
-} else {
-    echo "<p>Error fetching user details.</p>";
+} catch (PDOException $e) {
+    echo "<p>Error fetching user details: " . $e->getMessage() . "</p>";
     exit();
 }
 
@@ -43,28 +43,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $newDob = $_POST['dob'];
 
         // Update the user's details in the database
-        $updateSql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, gender = ?, dob = ? WHERE user_id = ?";
-        if ($updateStmt = $conn->prepare($updateSql)) {
-            $updateStmt->bind_param("ssssssi", $newFirstName, $newLastName, $newEmail, $newPhone, $newGender, $newDob, $userId);
+        try {
+            $updateSql = "UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email, phone = :phone, gender = :gender, dob = :dob WHERE user_id = :user_id";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bindParam(':first_name', $newFirstName);
+            $updateStmt->bindParam(':last_name', $newLastName);
+            $updateStmt->bindParam(':email', $newEmail);
+            $updateStmt->bindParam(':phone', $newPhone);
+            $updateStmt->bindParam(':gender', $newGender);
+            $updateStmt->bindParam(':dob', $newDob);
+            $updateStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $updateStmt->execute();
             header('Location: profile.php'); // Refresh the page to reflect changes
             exit();
-        } else {
-            echo "<p>Error updating profile.</p>";
+        } catch (PDOException $e) {
+            echo "<p>Error updating profile: " . $e->getMessage() . "</p>";
         }
     }
 
     // Handle account deletion
     if (isset($_POST['delete_account'])) {
-        $deleteSql = "DELETE FROM users WHERE user_id = ?";
-        if ($deleteStmt = $conn->prepare($deleteSql)) {
-            $deleteStmt->bind_param("i", $userId);
+        try {
+            $deleteSql = "DELETE FROM users WHERE user_id = :user_id";
+            $deleteStmt = $conn->prepare($deleteSql);
+            $deleteStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $deleteStmt->execute();
             session_destroy();
             header('Location: register.php'); // Redirect to registration page after deletion
             exit();
-        } else {
-            echo "<p>Error deleting account.</p>";
+        } catch (PDOException $e) {
+            echo "<p>Error deleting account: " . $e->getMessage() . "</p>";
         }
     }
 }

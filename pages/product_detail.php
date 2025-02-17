@@ -1,6 +1,4 @@
 <?php
-
-
 session_start();
 ob_start(); // Start output buffering
 include('../includes/header.php');
@@ -17,20 +15,14 @@ if (isset($_GET['id'])) {
     $productId = $_GET['id'];
 
     // Fetch product details
-    $sql = "SELECT * FROM products WHERE product_id = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $productId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $sql = "SELECT * FROM products WHERE product_id = :productId";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
+    $stmt->execute();
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result->num_rows > 0) {
-            $product = $result->fetch_assoc();
-        } else {
-            echo "<p>Product not found.</p>";
-            exit();
-        }
-    } else {
-        echo "<p>Error fetching product details.</p>";
+    if (!$product) {
+        echo "<p>Product not found.</p>";
         exit();
     }
 } else {
@@ -45,23 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $userId = $_SESSION['user_id'];
 
     // Check if product is already in cart
-    $checkSql = "SELECT * FROM cart WHERE user_id = ? AND product_id = ?";
+    $checkSql = "SELECT * FROM cart WHERE user_id = :userId AND product_id = :productId";
     $stmt = $conn->prepare($checkSql);
-    $stmt->bind_param("ii", $userId, $productId);
+    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+    $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $cartItem = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result->num_rows > 0) {
+    if ($cartItem) {
         // If product already in cart, update quantity
-        $updateSql = "UPDATE cart SET product_quantity = product_quantity + ? WHERE user_id = ? AND product_id = ?";
+        $updateSql = "UPDATE cart SET product_quantity = product_quantity + :quantity WHERE user_id = :userId AND product_id = :productId";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("iii", $quantity, $userId, $productId);
+        $updateStmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $updateStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $updateStmt->bindParam(':productId', $productId, PDO::PARAM_INT);
         $updateStmt->execute();
     } else {
         // If product not in cart, insert new record
-        $insertSql = "INSERT INTO cart (user_id, product_id, product_quantity) VALUES (?, ?, ?)";
+        $insertSql = "INSERT INTO cart (user_id, product_id, product_quantity) VALUES (:userId, :productId, :quantity)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("iii", $userId, $productId, $quantity);
+        $insertStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':productId', $productId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
         $insertStmt->execute();
     }
 
@@ -72,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 }
 
 // Fetch related products (same category or random products)
-$relatedProductsSql = "SELECT * FROM products WHERE product_id != ? LIMIT 4";
+$relatedProductsSql = "SELECT * FROM products WHERE product_id != :productId LIMIT 4";
 $relatedStmt = $conn->prepare($relatedProductsSql);
-$relatedStmt->bind_param("i", $productId);
+$relatedStmt->bindParam(':productId', $productId, PDO::PARAM_INT);
 $relatedStmt->execute();
-$relatedProductsResult = $relatedStmt->get_result();
+$relatedProducts = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -159,26 +156,26 @@ $relatedProductsResult = $relatedStmt->get_result();
 
         <!-- More Products Section -->
         <div class="mt-12">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">You may also like</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        <?php while ($relatedProduct = $relatedProductsResult->fetch_assoc()) : ?>
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <!-- Make the image clickable and redirect to product details page -->
-                <a href="product_detail.php?id=<?php echo $relatedProduct['product_id']; ?>">
-                    <img class="w-full h-48 object-cover" src="<?php echo htmlspecialchars($relatedProduct['image_url']); ?>" alt="<?php echo htmlspecialchars($relatedProduct['product_name']); ?>">
-                </a>
-                <div class="p-4">
-                    <!-- Make the product name clickable and redirect to product details page -->
-                    <a href="product_detail.php?id=<?php echo $relatedProduct['product_id']; ?>" class="text-xl font-semibold text-gray-800 hover:text-indigo-600">
-                        <?php echo htmlspecialchars($relatedProduct['product_name']); ?>
-                    </a>
-                    <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($relatedProduct['description']); ?></p>
-                    <p class="text-xl font-bold text-indigo-600">Rs. <?php echo htmlspecialchars($relatedProduct['price']); ?></p>
-                </div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">You may also like</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                <?php foreach ($relatedProducts as $relatedProduct) : ?>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <!-- Make the image clickable and redirect to product details page -->
+                        <a href="product_detail.php?id=<?php echo $relatedProduct['product_id']; ?>">
+                            <img class="w-full h-48 object-cover" src="<?php echo htmlspecialchars($relatedProduct['image_url']); ?>" alt="<?php echo htmlspecialchars($relatedProduct['product_name']); ?>">
+                        </a>
+                        <div class="p-4">
+                            <!-- Make the product name clickable and redirect to product details page -->
+                            <a href="product_detail.php?id=<?php echo $relatedProduct['product_id']; ?>" class="text-xl font-semibold text-gray-800 hover:text-indigo-600">
+                                <?php echo htmlspecialchars($relatedProduct['product_name']); ?>
+                            </a>
+                            <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($relatedProduct['description']); ?></p>
+                            <p class="text-xl font-bold text-indigo-600">Rs. <?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
-        <?php endwhile; ?>
-    </div>
-</div>
+        </div>
 
     </div>
 
@@ -207,11 +204,6 @@ $relatedProductsResult = $relatedStmt->get_result();
                 hiddenQuantityInput.value = quantity + 1;
                 totalPriceDisplay.innerHTML = "Total Price: Rs. " + (productPrice * (quantity + 1));
             }
-        });
-
-        quantityInput.addEventListener('input', () => {
-            hiddenQuantityInput.value = quantityInput.value;
-            totalPriceDisplay.innerHTML = "Total Price: Rs. " + (productPrice * quantityInput.value);
         });
     </script>
 

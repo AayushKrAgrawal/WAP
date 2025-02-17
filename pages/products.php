@@ -13,7 +13,7 @@ include '../includes/db_connect.php'; // Include your database connection file
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body style="background-color: #F5EFFF;">
+<body style="background-color: #F5EFFF;"> 
 
 <!-- Our Packages Section -->
 <section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -67,22 +67,32 @@ include '../includes/db_connect.php'; // Include your database connection file
             <!-- Packages Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
-                    // Fetch products from database
-                    $query = "SELECT * FROM products";
-                    $result = mysqli_query($conn, $query);
+                    try {
+                        // Set up PDO connection
+                        $pdo = new PDO("mysql:host=localhost;dbname=hamroPratibha", "root", "");
+                        // Set the PDO error mode to exception
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo renderCard([
-                                "imageUrl" => $row['image_url'], 
-                                "link" => "product_detail.php?id=" . $row['product_id'], // Pass product ID in URL
-                                "title" => $row['product_name'], 
-                                "description" => $row['description'], 
-                                "price" => "" . $row['price']
-                            ]);
+                        // Query the products
+                        $stmt = $pdo->query("SELECT * FROM products");
+
+                        // Check if products are found
+                        if ($stmt->rowCount() > 0) {
+                            // Loop through each product and display it using the renderCard function
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo renderCard([
+                                    "imageUrl" => $row['image_url'], 
+                                    "link" => "product_detail.php?id=" . $row['product_id'], 
+                                    "title" => $row['product_name'], 
+                                    "description" => $row['description'], 
+                                    "price" => "" . number_format($row['price'], 2)
+                                ]);
+                            }
+                        } else {
+                            echo "<p class='text-gray-600'>No products found.</p>";
                         }
-                    } else {
-                        echo "<p class='text-gray-600'>No products found.</p>";
+                    } catch (PDOException $e) {
+                        echo "<p class='text-red-500'>Error: " . $e->getMessage() . "</p>";
                     }
                 ?>
             </div>
@@ -92,4 +102,4 @@ include '../includes/db_connect.php'; // Include your database connection file
 </body>
 </html>
 
-<?php include '../includes/footer.php'; ?>  
+<?php include '../includes/footer.php'; ?>

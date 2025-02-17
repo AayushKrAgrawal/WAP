@@ -6,17 +6,15 @@ $password = "";
 $dbname = "hamroPratibha";
 
 try {
-    // Create a database connection using MySQLi with error mode enabled
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    // Create a database connection using PDO with error mode enabled
+    $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
+    $conn = new PDO($dsn, $username, $password);
 
-    // Check connection
-    if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
-    }
-
-    // Set character encoding to UTF-8
-    $conn->set_charset("utf8mb4");
-} catch (Exception $e) {
+    // Set PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Optionally set PDO to return associative arrays by default
+    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
     die("Database connection error: " . $e->getMessage());
 }
 ?>

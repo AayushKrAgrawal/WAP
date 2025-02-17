@@ -22,43 +22,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    // Update the cart based on the item type (product, box, or package)
-    $sql = "SELECT product_id, boxes_id, package_id FROM cart WHERE cart_id = ? AND user_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $cartId, $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    try {
+        // Prepare the SQL statement to select the cart item based on cart_id and user_id
+        $sql = "SELECT product_id, boxes_id, package_id FROM cart WHERE cart_id = :cart_id AND user_id = :user_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':cart_id', $cartId, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Update the quantity based on the item type
-        if ($row['product_id'] > 0) {
-            // Update product quantity
-            $sqlUpdate = "UPDATE cart SET product_quantity = ? WHERE cart_id = ? AND user_id = ?";
-            $stmtUpdate = $conn->prepare($sqlUpdate);
-            $stmtUpdate->bind_param("iii", $quantity, $cartId, $userId);
-            $stmtUpdate->execute();
-        } elseif ($row['boxes_id'] > 0) {
-            // Update box quantity
-            $sqlUpdate = "UPDATE cart SET boxes_quantity = ? WHERE cart_id = ? AND user_id = ?";
-            $stmtUpdate = $conn->prepare($sqlUpdate);
-            $stmtUpdate->bind_param("iii", $quantity, $cartId, $userId);
-            $stmtUpdate->execute();
-        } elseif ($row['package_id'] > 0) {
-            // Update package quantity
-            $sqlUpdate = "UPDATE cart SET package_quantity = ? WHERE cart_id = ? AND user_id = ?";
-            $stmtUpdate = $conn->prepare($sqlUpdate);
-            $stmtUpdate->bind_param("iii", $quantity, $cartId, $userId);
-            $stmtUpdate->execute();
+        if ($row) {
+            // Update the quantity based on the item type
+            if ($row['product_id'] > 0) {
+                // Update product quantity
+                $sqlUpdate = "UPDATE cart SET product_quantity = :quantity WHERE cart_id = :cart_id AND user_id = :user_id";
+                $stmtUpdate = $conn->prepare($sqlUpdate);
+                $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':cart_id', $cartId, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmtUpdate->execute();
+            } elseif ($row['boxes_id'] > 0) {
+                // Update box quantity
+                $sqlUpdate = "UPDATE cart SET boxes_quantity = :quantity WHERE cart_id = :cart_id AND user_id = :user_id";
+                $stmtUpdate = $conn->prepare($sqlUpdate);
+                $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':cart_id', $cartId, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmtUpdate->execute();
+            } elseif ($row['package_id'] > 0) {
+                // Update package quantity
+                $sqlUpdate = "UPDATE cart SET package_quantity = :quantity WHERE cart_id = :cart_id AND user_id = :user_id";
+                $stmtUpdate = $conn->prepare($sqlUpdate);
+                $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':cart_id', $cartId, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmtUpdate->execute();
+            }
+
+            // Redirect to the cart page after updating
+            header("Location: ../pages/cart.php");
+            exit();
+        } else {
+            echo "Invalid cart item.";
+            exit();
         }
-
-        // Redirect to the cart page after updating
-        header("Location: ../pages/cart.php");
-        exit();
-    } else {
-        echo "Invalid cart item.";
-        exit();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>

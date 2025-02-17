@@ -13,14 +13,14 @@ if (isset($_GET['update_role']) && isset($_GET['user_id'])) {
     $userId = $_GET['user_id'];
     $newRole = ($_GET['update_role'] == 'user') ? 'admin' : 'user'; // Toggle between 'user' and 'admin'
 
-    $sql = "UPDATE users SET role = ? WHERE user_id = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("si", $newRole, $userId);
-        if ($stmt->execute()) {
-            header("Location: manage_users.php"); // Refresh the page after updating
-        } else {
-            echo "Error updating role: " . $stmt->error;
-        }
+    $sql = "UPDATE users SET role = :role WHERE user_id = :user_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':role', $newRole, PDO::PARAM_STR);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    if ($stmt->execute()) {
+        header("Location: manage_users.php"); // Refresh the page after updating
+    } else {
+        echo "Error updating role: " . $stmt->errorInfo()[2];
     }
 }
 
@@ -28,20 +28,21 @@ if (isset($_GET['update_role']) && isset($_GET['user_id'])) {
 if (isset($_GET['delete_user']) && isset($_GET['user_id'])) {
     $userId = $_GET['user_id'];
 
-    $sql = "DELETE FROM users WHERE user_id = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $userId);
-        if ($stmt->execute()) {
-            header("Location: manage_users.php"); // Refresh the page after deleting
-        } else {
-            echo "Error deleting user: " . $stmt->error;
-        }
+    $sql = "DELETE FROM users WHERE user_id = :user_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    if ($stmt->execute()) {
+        header("Location: manage_users.php"); // Refresh the page after deleting
+    } else {
+        echo "Error deleting user: " . $stmt->errorInfo()[2];
     }
 }
 
 // Fetch all users
 $sql = "SELECT * FROM users";
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -155,8 +156,8 @@ $result = $conn->query($sql);
                     </thead>
                     <tbody>
                         <?php
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
+                        if (count($users) > 0) {
+                            foreach ($users as $row) {
                                 echo "<tr>";
                                 echo "<td>" . htmlspecialchars($row['first_name']) . " " . htmlspecialchars($row['last_name']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['email']) . "</td>";

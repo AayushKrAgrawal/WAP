@@ -11,20 +11,14 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
-// Fetch the default address for the user
-$sql = "SELECT * FROM user_addresses WHERE user_id = ? AND is_default = 1 LIMIT 1";
+// Fetch the default address for the user using PDO
+$sql = "SELECT * FROM user_addresses WHERE user_id = :user_id AND is_default = 1 LIMIT 1";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
+$stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
 $stmt->execute();
-$addressResult = $stmt->get_result();
+$address = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($addressResult->num_rows > 0) {
-    $address = $addressResult->fetch_assoc();
-} else {
-    $address = null; // If no default address is set, handle accordingly
-}
-
-// Fetch the cart items for the user
+// Fetch the cart items for the user using PDO
 $sqlCart = "SELECT c.cart_id, c.product_quantity, c.boxes_quantity, c.package_quantity,
                    p.product_name, p.price AS product_price, 
                    b.name AS box_name, b.price AS box_price, 
@@ -33,11 +27,11 @@ $sqlCart = "SELECT c.cart_id, c.product_quantity, c.boxes_quantity, c.package_qu
             LEFT JOIN products p ON c.product_id = p.product_id
             LEFT JOIN boxes b ON c.boxes_id = b.id
             LEFT JOIN packages pkg ON c.package_id = pkg.id
-            WHERE c.user_id = ?";
+            WHERE c.user_id = :user_id";
 $stmtCart = $conn->prepare($sqlCart);
-$stmtCart->bind_param("i", $userId);
+$stmtCart->bindParam(':user_id', $userId, PDO::PARAM_INT);
 $stmtCart->execute();
-$resultCart = $stmtCart->get_result();
+$resultCart = $stmtCart->fetchAll(PDO::FETCH_ASSOC);
 
 $totalCost = 0;
 ?>
@@ -73,7 +67,7 @@ $totalCost = 0;
 
         <div class="shadow-md rounded-lg overflow-hidden">
             <ul class="divide-y divide-gray-200">
-                <?php while ($item = $resultCart->fetch_assoc()): ?>
+                <?php foreach ($resultCart as $item): ?>
                     <?php
                         if ($item['product_name']) {
                             $itemPrice = $item['product_price'];
@@ -106,7 +100,7 @@ $totalCost = 0;
                             </div>
                         </div>
                     </li>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </ul>
 
             <div class="bg-gray-100 px-4 py-6 sm:px-6">

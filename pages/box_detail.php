@@ -3,7 +3,7 @@ session_start();
 ob_start(); // Start output buffering
 
 include('../includes/header.php');
-include('../includes/db_connect.php');
+include('../includes/db_connect.php'); // Ensure this file sets up the PDO connection
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -15,21 +15,16 @@ if (!isset($_SESSION['user_id'])) {
 if (isset($_GET['id'])) {
     $boxId = intval($_GET['id']); // Sanitize input
 
-    // Fetch box details from the 'boxes' table
-    $sql = "SELECT * FROM boxes WHERE id = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $boxId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Fetch box details from the 'boxes' table using PDO
+    $sql = "SELECT * FROM boxes WHERE id = :boxId";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':boxId', $boxId, PDO::PARAM_INT);
+    $stmt->execute();
 
-        if ($result->num_rows > 0) {
-            $box = $result->fetch_assoc();
-        } else {
-            echo "<p>Box not found.</p>";
-            exit();
-        }
+    if ($stmt->rowCount() > 0) {
+        $box = $stmt->fetch(PDO::FETCH_ASSOC);
     } else {
-        echo "<p>Error fetching box details.</p>";
+        echo "<p>Box not found.</p>";
         exit();
     }
 } else {
@@ -47,24 +42,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
         $quantity = 1;
     }
 
-    // Check if box is already in cart
-    $checkSql = "SELECT * FROM cart WHERE user_id = ? AND boxes_id = ?";
+    // Check if box is already in cart using PDO
+    $checkSql = "SELECT * FROM cart WHERE user_id = :userId AND boxes_id = :boxId";
     $stmt = $conn->prepare($checkSql);
-    $stmt->bind_param("ii", $userId, $boxId);
+    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+    $stmt->bindParam(':boxId', $boxId, PDO::PARAM_INT);
     $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
+    if ($stmt->rowCount() > 0) {
         // If box already in cart, update quantity
-        $updateSql = "UPDATE cart SET boxes_quantity = boxes_quantity + ? WHERE user_id = ? AND boxes_id = ?";
+        $updateSql = "UPDATE cart SET boxes_quantity = boxes_quantity + :quantity WHERE user_id = :userId AND boxes_id = :boxId";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("iii", $quantity, $userId, $boxId);
+        $updateStmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $updateStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $updateStmt->bindParam(':boxId', $boxId, PDO::PARAM_INT);
         $updateStmt->execute();
     } else {
         // If box not in cart, insert new record
-        $insertSql = "INSERT INTO cart (user_id, boxes_id, boxes_quantity) VALUES (?, ?, ?)";
+        $insertSql = "INSERT INTO cart (user_id, boxes_id, boxes_quantity) VALUES (:userId, :boxId, :quantity)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("iii", $userId, $boxId, $quantity);
+        $insertStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':boxId', $boxId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
         $insertStmt->execute();
     }
 
@@ -74,12 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     exit();
 }
 
-// Fetch related boxes (same category or random boxes)
-$relatedBoxesSql = "SELECT * FROM boxes WHERE id != ? LIMIT 4";
+// Fetch related boxes (same category or random boxes) using PDO
+$relatedBoxesSql = "SELECT * FROM boxes WHERE id != :boxId LIMIT 4";
 $relatedStmt = $conn->prepare($relatedBoxesSql);
-$relatedStmt->bind_param("i", $boxId);
+$relatedStmt->bindParam(':boxId', $boxId, PDO::PARAM_INT);
 $relatedStmt->execute();
-$relatedBoxesResult = $relatedStmt->get_result();
+$relatedBoxesResult = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

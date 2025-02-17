@@ -2,34 +2,36 @@
 session_start();
 
 // Check if admin is logged in
-if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
-    header("Location: admin_login.php");
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: /hamroPratibha/pages/login.php");
     exit();
 }
 
-// Database connection
-$host = 'localhost';
-$db = 'your_database';
-$user = 'your_username';
-$pass = 'your_password';
-$conn = new mysqli($host, $user, $pass, $db);
+// Include the database connection file
+include '../includes/db_connect.php';
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+// Check if the ID is set
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $box_id = $_GET['id'];
 
-    $sql = "DELETE FROM boxes WHERE id = $id";
+    // Delete the box from the database
+    $delete_query = "DELETE FROM boxes WHERE id = :id";
+    $delete_stmt = $conn->prepare($delete_query);
+    $delete_stmt->bindParam(':id', $box_id);
 
-    if ($conn->query($sql) === TRUE) {
+    if ($delete_stmt->execute()) {
+        // If delete is successful, redirect to manage boxes page
         header("Location: manage_boxes.php");
         exit();
     } else {
-        die("Error: " . $conn->error);
+        // If delete fails, redirect with an error message
+        header("Location: manage_boxes.php?error=There was an error deleting the box.");
+        exit();
     }
+} else {
+    // If ID is not set, redirect back to manage boxes page
+    header("Location: manage_boxes.php");
+    exit();
 }
-
-$conn->close();
 ?>
+

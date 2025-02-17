@@ -26,8 +26,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
             <a href="manage_users.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">👥 Manage Users</a>
             <a href="manage_products.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📦 Manage Products</a>
             <a href="manage_orders.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📑 Manage Orders</a>
-            <a href="manage_packages.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📑 Manage Packages</a>
-            <a href="manage_boxes.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📑 Manage Boxes</a>
+            <a href="manage_packages.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📦 Manage Packages</a>
+            <a href="manage_boxes.php" class="block py-2 px-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition">📦 Manage Boxes</a>
 
             <a href="../pages/login.php" class="block py-2 px-4 rounded-lg bg-red-600 hover:bg-red-500 transition">🚪 Logout</a>
         </nav>
@@ -66,6 +66,24 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                 <div class="ml-4">
                     <h3 class="text-xl font-semibold text-gray-700">Orders</h3>
                     <p class="text-gray-500">View and process orders.</p>
+                </div>
+            </a>
+
+            <!-- Packages Card -->
+            <a href="manage_packages.php" class="bg-white p-6 rounded-lg shadow-md flex items-center hover:bg-purple-50 transition">
+                <div class="text-3xl bg-purple-500 text-white p-4 rounded-lg">📦</div>
+                <div class="ml-4">
+                    <h3 class="text-xl font-semibold text-gray-700">Packages</h3>
+                    <p class="text-gray-500">Manage available packages.</p>
+                </div>
+            </a>
+
+            <!-- Boxes Card -->
+            <a href="manage_boxes.php" class="bg-white p-6 rounded-lg shadow-md flex items-center hover:bg-pink-50 transition">
+                <div class="text-3xl bg-pink-500 text-white p-4 rounded-lg">📦</div>
+                <div class="ml-4">
+                    <h3 class="text-xl font-semibold text-gray-700">Boxes</h3>
+                    <p class="text-gray-500">Manage the available boxes.</p>
                 </div>
             </a>
         </div>

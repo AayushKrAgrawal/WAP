@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2025 at 04:41 PM
+-- Generation Time: Feb 17, 2025 at 07:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,6 @@ CREATE TABLE `boxes` (
 --
 
 INSERT INTO `boxes` (`id`, `name`, `description`, `image_url`, `price`) VALUES
-(1, 'Small Box ', 'small in size ', '../assets/images/67ae22969f756.jpg', 500.00),
 (2, 'Paper Packaging  ', 'A brown paper wrapping that gives off a rustic, natural vibe. It’s finished off with a delicate flower, adding a simple yet thoughtful touch. Perfect for wrapping gifts or items with a down-to-earth, charming look.', '../assets/images/67b34e4171b0c.jpg', 50.00),
 (3, 'Clothed Box Packaging ', 'A tightly knotted cloth packaging with a clean and secure finish, layered over a paper box underneath. A small flower is added for that perfect finishing touch, giving it a simple yet charming and elegant look. ', '../assets/images/67b34ee632d7d.jpg', 450.00),
 (4, 'Triangle Box Packaging', 'A triangle-shaped packaging that stands out with its unique design. It\'s neatly tied with a ribbon, with a flower added for a charming touch. Simple, stylish, and perfect for gifting or special occasions.', '../assets/images/67b34fbd7065e.jpg', 90.00),
@@ -79,7 +78,14 @@ INSERT INTO `cart` (`cart_id`, `user_id`, `product_id`, `product_quantity`, `add
 (43, 7, NULL, NULL, '2025-02-15 16:39:59', NULL, 1, NULL, 4),
 (44, 7, 12, 2, '2025-02-15 16:40:10', NULL, NULL, NULL, NULL),
 (46, 7, 15, 3, '2025-02-15 16:40:18', NULL, NULL, NULL, NULL),
-(49, 1, NULL, NULL, '2025-02-17 15:06:22', NULL, 9, NULL, 1);
+(49, 1, NULL, NULL, '2025-02-17 15:06:22', NULL, 9, NULL, 1),
+(54, 8, 3, 4, '2025-02-17 16:34:58', NULL, NULL, NULL, NULL),
+(55, 8, NULL, NULL, '2025-02-17 16:37:56', 5, NULL, 2, NULL),
+(56, 8, NULL, NULL, '2025-02-17 16:41:58', 4, NULL, 1, NULL),
+(57, 1, NULL, NULL, '2025-02-17 17:56:57', 4, NULL, 3, NULL),
+(58, 1, 6, 2, '2025-02-17 17:57:07', NULL, NULL, NULL, NULL),
+(59, 1, 9, 1, '2025-02-17 17:57:10', NULL, NULL, NULL, NULL),
+(60, 1, NULL, NULL, '2025-02-17 17:57:23', NULL, 3, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -90,25 +96,57 @@ INSERT INTO `cart` (`cart_id`, `user_id`, `product_id`, `product_quantity`, `add
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `order_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `shipping_address` varchar(255) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `province` varchar(100) NOT NULL,
+  `postal_code` varchar(20) NOT NULL,
+  `latitude` decimal(9,6) DEFAULT NULL,
+  `longitude` decimal(9,6) DEFAULT NULL,
+  `total_cost` decimal(10,2) NOT NULL,
+  `payment_method` enum('credit_card','paypal','cash_on_delivery') NOT NULL,
+  `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('pending','processing','completed','canceled') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `user_id`, `product_id`, `quantity`, `price`, `order_date`) VALUES
-(1, 1, 6, 1, 50.00, '2025-02-12 17:53:09'),
-(2, 1, 6, 5, 50.00, '2025-02-12 17:56:25'),
-(3, 1, 6, 5, 50.00, '2025-02-12 17:57:29'),
-(4, 1, 3, 2, 3250.00, '2025-02-12 17:58:05'),
-(5, 1, 6, 1, 50.00, '2025-02-12 17:58:05'),
-(6, 1, 3, 3, 3250.00, '2025-02-13 05:20:22'),
-(7, 1, 6, 9, 50.00, '2025-02-13 15:18:27'),
-(8, 1, 6, 4, 50.00, '2025-02-13 17:00:43');
+INSERT INTO `orders` (`order_id`, `user_id`, `shipping_address`, `city`, `province`, `postal_code`, `latitude`, `longitude`, `total_cost`, `payment_method`, `order_date`, `status`) VALUES
+(1, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-17 17:54:42', 'completed'),
+(2, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-17 17:56:25', 'processing'),
+(3, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-17 17:57:39', 'completed');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `order_item_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `box_id` int(11) DEFAULT NULL,
+  `package_id` int(11) DEFAULT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `box_id`, `package_id`, `product_name`, `quantity`, `price`, `total`) VALUES
+(1, 1, NULL, NULL, NULL, 'Pouch only packaging ', 1, 60.00, 60.00),
+(2, 2, NULL, NULL, NULL, 'Pouch only packaging ', 1, 60.00, 60.00),
+(3, 3, NULL, NULL, NULL, 'Pouch only packaging ', 1, 60.00, 60.00),
+(4, 3, NULL, NULL, NULL, 'Sajilo Gift Box (सजिलो)', 3, 500.00, 1500.00),
+(5, 3, NULL, NULL, NULL, 'Buddhist Incense', 2, 50.00, 100.00),
+(6, 3, NULL, NULL, NULL, 'Lokta Paper Journal', 1, 500.00, 500.00),
+(7, 3, NULL, NULL, NULL, 'Clothed Box Packaging ', 2, 450.00, 900.00);
 
 -- --------------------------------------------------------
 
@@ -158,7 +196,6 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `image_url`, `created_at`, `updated_at`) VALUES
-(1, 'Prayer Flag', 'Prayer Flag', 50.00, '../assets\\images\\Prayerflag.png', '2025-02-11 15:55:39', '2025-02-11 17:25:17'),
 (3, 'Ganesh Ji Statue', 'Very Good', 3250.00, '../assets/images/67ab769a05e6b0.45516654.jpg', '2025-02-11 16:11:06', '2025-02-11 16:28:17'),
 (6, 'Buddhist Incense', 'nice smell', 50.00, '../assets/images/67ab77c79fe165.42922699.jpg', '2025-02-11 16:16:07', '2025-02-11 16:16:07'),
 (7, 'key chain', 'very nice product', 1000.00, '../assets/images/67ad81aaac5105.51744142.jpg', '2025-02-13 05:22:50', '2025-02-13 05:22:50'),
@@ -180,7 +217,7 @@ INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `i
 (24, 'Organic Green Tea', 'Enjoy the refreshing taste and health benefits of Organic Green Tea, sourced from the lush, high-altitude tea gardens of Nepal. Each tea bag is filled with pure, handpicked tea leaves, free from additives or artificial flavors, ensuring a smooth, earthy taste with delicate floral and grassy notes.\r\n\r\nRich in antioxidants and natural catechins, this green tea helps boost immunity, metabolism, and overall well-being. Its mild caffeine content provides a gentle energy lift without the jitters, making it a perfect choice for a morning refresh or a calming evening ritual.\r\n\r\nFeatures:\r\n✔ 100% organic & natural – free from chemicals and additives\r\n✔ Rich in antioxidants – supports immunity and detoxification\r\n✔ Smooth & refreshing flavor – with delicate floral and grassy notes\r\n✔ Convenient & mess-free – comes in 50 individually wrapped tea bags\r\n✔ Sourced from Nepal – grown in high-altitude organic tea gardens\r\n\r\nBrewing Instructions:\r\n\r\nSteep 1 tea bag in hot water (80-85°C) for 2-3 minutes.\r\nEnjoy plain or with honey and lemon for added taste.', 950.00, '../assets/images/67b046c191f311.60972958.png', '2025-02-15 07:48:17', '2025-02-15 07:48:17'),
 (25, 'Ceramic Cups', 'Experience the artistry of Nepal with these handmade ceramic cups, crafted by skilled artisans using traditional pottery techniques. Each cup is individually molded and hand-glazed, making every piece unique with its own natural texture and slight variations in color and design.\r\nMade from high-quality clay, these cups are durable, heat-resistant, and lead-free, ensuring a safe and enjoyable drinking experience. Perfect for tea, coffee, or herbal drinks, they add a touch of authenticity and warmth to your everyday rituals.\r\nFeatures:\r\n✔ Handcrafted in Nepal – made by local artisans using traditional methods\r\n✔ Eco-friendly & lead-free – safe for daily use\r\n✔ Unique textures & designs – no two cups are exactly the same\r\n✔ Durable & heat-resistant – suitable for hot and cold beverages\r\n✔ Elegant & timeless – perfect for home, office, or as a thoughtful gift', 800.00, '../assets/images/67b046d88b5956.90923146.png', '2025-02-15 07:48:40', '2025-02-15 07:48:40'),
 (26, 'Bamboo Hair Brush', 'Upgrade your hair care routine with this eco-friendly Bamboo Hair Brush, designed for smooth and gentle detangling. Made from 100% natural bamboo, this brush features anti-static, rounded bristles that glide effortlessly through your hair, reducing breakage and promoting healthy scalp circulation.\r\nThe ergonomic bamboo handle provides a comfortable grip, while the durable bristles help distribute natural oils evenly, leaving your hair shiny, soft, and frizz-free. Suitable for all hair types, including curly, straight, thick, and fine hair, this sustainable alternative to plastic brushes is perfect for daily use.\r\nFeatures:\r\n✔ Eco-friendly & sustainable – made from biodegradable bamboo\r\n✔ Gentle on hair & scalp – reduces breakage and promotes healthy hair growth\r\n✔ Anti-static & frizz-reducing – helps maintain smooth and shiny hair\r\n✔ Ergonomic & durable – comfortable grip for easy styling\r\n✔ Suitable for all hair types – perfect for men, women, and children', 350.00, '../assets/images/67b046fde53921.52059990.png', '2025-02-15 07:49:17', '2025-02-15 07:49:17'),
-(27, 'Bamboo bottles', 'Stay hydrated in style with this eco-friendly Bamboo Bottle, crafted from 100% natural bamboo with a stainless steel interior for durability and insulation. Designed to keep your drinks hot or cold for hours, this bottle is perfect for daily use, whether you\'re at work, traveling, or enjoying the outdoors.\r\nThe lightweight yet sturdy design makes it easy to carry, while the leak-proof lid ensures spill-free convenience. With a sleek and minimalist aesthetic, this bamboo bottle is not only functional but also a sustainable alternative to plastic bottles, reducing waste and promoting an eco-conscious lifestyle.\r\nFeatures:\r\n✔ Made from natural bamboo – biodegradable and sustainable\r\n✔ Double-wall insulation – keeps beverages hot or cold for up to 12 hours\r\n✔ Leak-proof & durable – stainless steel interior for long-lasting use\r\n✔ Lightweight & portable – perfect for travel, work, and daily hydration\r\n✔ Eco-friendly alternative – reduce plastic waste and embrace sustainability', 600.00, '../assets/images/67b047124a86f5.95684755.png', '2025-02-15 07:49:38', '2025-02-15 07:49:38'),
+(27, 'Bamboo bottles', 'Stay hydrated in style with this eco-friendly Bamboo Bottle, crafted from 100% natural bamboo with a stainless steel interior for durability and insulation. Designed to keep your drinks hot or cold for hours, this bottle is perfect for daily use, whether you\'re at work, traveling, or enjoying the outdoors.\r\nThe lightweight yet sturdy design makes it easy to carry, while the leak-proof lid ensures spill-free convenience. With a sleek and minimalist aesthetic, this bamboo bottle is not only functional but also a sustainable alternative to plastic bottles, reducing waste and promoting an eco-conscious lifestyle.\r\nFeatures:\r\n✔ Made from natural bamboo – biodegradable and sustainable\r\n✔ Double-wall insulation – keeps beverages hot or cold for up to 12 hours\r\n✔ Leak-proof & durable – stainless steel interior for long-lasting use\r\n✔ Lightweight & portable – perfect for travel, work, and daily hydration\r\n✔ Eco-friendly alternative – reduce plastic waste and embrace sustainability', 600.00, '../assets/images/67b047124a86f5.95684755.png', '2025-02-15 07:49:38', '2025-02-17 17:13:57'),
 (28, 'Scented Candles', 'Description- Add a touch of tranquility to your space with Scented Candles made in Nepal, crafted from 100% natural beeswax and pure essential oils. Hand-poured by skilled artisans, these candles offer soothing fragrances like sandalwood, jasmine, and rose, creating a calming ambiance. Eco-friendly and sustainable, they burn cleanly and are packaged in recyclable materials, making them a perfect addition to any home.\r\nFeatures:\r\n✔ Made with natural beeswax – eco-friendly and biodegradable\r\n✔ Pure essential oils – calming scents from local herbs and flowers\r\n✔ Eco-friendly packaging – minimal waste, 100% recyclable\r\n✔ Long-lasting burn time – enjoy the fragrance for hours', 195.00, '../assets/images/67b0474a0e4ed5.70300474.png', '2025-02-15 07:50:34', '2025-02-15 07:50:34'),
 (29, 'Key rings', 'Add a personal touch to your keys with our stylish key rings, crafted from high-quality materials. Perfect for organizing keys or as a thoughtful gift, these key rings are durable, lightweight, and come in a variety of designs to suit any style.', 100.00, '../assets/images/67b047621f9751.83221143.png', '2025-02-15 07:50:58', '2025-02-15 07:50:58'),
 (30, 'Mini Bajra Key Rings', 'Inspired by the sacred Bajra (Vajra), these handcrafted key rings symbolize strength and wisdom in Nepali Buddhist culture. Made from brass or alloy, they are lightweight, durable, and intricately designed, making them a meaningful accessory or souvenir.', 120.00, '../assets/images/67b0477cae93f6.40646154.png', '2025-02-15 07:51:24', '2025-02-15 07:51:24'),
@@ -216,9 +253,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `dob`, `gender`, `password_hash`, `terms_agreed`, `created_at`, `updated_at`, `role`, `reset_token`, `token_expiry`) VALUES
 (1, 'Aayush', 'Agrawal', 'aayushagrawal4572@gmail.com', '9823199038', '2003-06-11', 'male', '$2y$10$whzo4Hcu6Ldl08n4yyLsLO0vi0AH2Fisi.azGwIfi23w.wO8jCUhm', 1, '2025-02-09 15:52:12', '2025-02-11 17:34:08', 'user', 'd0383141857fa5d530727f790dced10e717ec6c1dc6a3a45c5b580d959c08a9f07d59f16b93d8c673927c0541b2057900a99', '2025-02-11 21:27:11'),
-(2, 'Aayush ', 'Second ', 'aayush2@gmail.com', '7485961236', '2002-07-17', 'female', '$2y$10$So3OpzuKqzOiHiGOPQNnsO0A/iOMTuqHSCURyFtUABMGN8QvHH1Lq', 1, '2025-02-09 16:12:10', '2025-02-11 16:48:11', 'user', NULL, NULL),
 (5, 'admin', 'admin', 'admin@admin.com', '9848454545', '2002-06-13', 'male', '$2y$10$zp1cwnuAUJXZMfsKRyTfMuSgd9O2BzDuEOLvDmbDHJ5y0383h45ui', 1, '2025-02-10 16:09:50', '2025-02-10 16:10:34', 'admin', NULL, NULL),
-(7, 'test', 'user', 'testuser@gmail.com', '9845152632', '2005-02-09', 'female', '$2y$10$max2ANMYaZ3a06MI8Julx.Xz8FFTspXHbJlBT1Qz67.NSVaQC6L8a', 1, '2025-02-15 16:39:17', '2025-02-15 16:39:17', 'user', NULL, NULL);
+(7, 'test', 'user', 'testuser@gmail.com', '9845152632', '2005-02-09', 'female', '$2y$10$max2ANMYaZ3a06MI8Julx.Xz8FFTspXHbJlBT1Qz67.NSVaQC6L8a', 1, '2025-02-15 16:39:17', '2025-02-15 16:39:17', 'user', NULL, NULL),
+(8, 'test', '5', 'test5@gmail.com', '554541215', '2004-06-08', 'male', '$2y$10$Joo5bYkiSWjNPm9umAqYH.qo7bAdP2Ok5sohmUnKRqYId9xfD8KzK', 1, '2025-02-17 16:21:30', '2025-02-17 16:48:31', 'admin', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -244,7 +281,8 @@ CREATE TABLE `user_addresses` (
 
 INSERT INTO `user_addresses` (`id`, `user_id`, `address`, `city`, `province`, `postal_code`, `latitude`, `longitude`, `is_default`) VALUES
 (1, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0, 0, 1),
-(2, 7, 'Chhetrapati ', 'Kathmandu', 'Bagmati', '3006', 0, 0, 1);
+(2, 7, 'Chhetrapati ', 'Kathmandu', 'Bagmati', '3006', 0, 0, 1),
+(3, 8, 'Dhalko', 'ktm', 'Bagmati', '3006', 0, 0, 1);
 
 --
 -- Indexes for dumped tables
@@ -269,8 +307,17 @@ ALTER TABLE `cart`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD PRIMARY KEY (`order_item_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `box_id` (`box_id`),
+  ADD KEY `package_id` (`package_id`);
 
 --
 -- Indexes for table `packages`
@@ -313,19 +360,25 @@ ALTER TABLE `boxes`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `order_items`
+--
+ALTER TABLE `order_items`
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `packages`
 --
 ALTER TABLE `packages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -337,13 +390,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
 --
 ALTER TABLE `user_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -360,8 +413,16 @@ ALTER TABLE `cart`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
+  ADD CONSTRAINT `order_items_ibfk_3` FOREIGN KEY (`box_id`) REFERENCES `boxes` (`id`),
+  ADD CONSTRAINT `order_items_ibfk_4` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`);
 
 --
 -- Constraints for table `user_addresses`

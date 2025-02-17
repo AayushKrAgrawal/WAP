@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../includes/db_connect.php');
+include('../includes/db_connect.php'); // Make sure the db_connect.php file uses PDO to establish connection
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -33,18 +33,23 @@ if (isset($_POST['add_product'])) {
 
         // Move the uploaded file to the target directory
         if (move_uploaded_file($imageTmpName, $imageUploadPath)) {
-            // Insert product into the database
-            $sql = "INSERT INTO products (product_name, description, price, image_url) VALUES (?, ?, ?, ?)";
-
-            if ($stmt = $conn->prepare($sql)) {
+            try {
+                // Insert product into the database using PDO
+                $sql = "INSERT INTO products (product_name, description, price, image_url) VALUES (:product_name, :description, :price, :image_url)";
+                $stmt = $conn->prepare($sql);
                 $imageUrl = '../assets/images/' . $imageNewName; // Relative path to store in database
-                $stmt->bind_param("ssss", $productName, $description, $price, $imageUrl);
+                $stmt->bindParam(':product_name', $productName);
+                $stmt->bindParam(':description', $description);
+                $stmt->bindParam(':price', $price);
+                $stmt->bindParam(':image_url', $imageUrl);
+
                 if ($stmt->execute()) {
                     echo "<p class='text-green-500'>Product added successfully!</p>";
                 } else {
-                    echo "Error: " . $stmt->error;
+                    echo "Error: " . $stmt->errorInfo()[2];
                 }
-                $stmt->close();
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
             }
         } else {
             echo "Error uploading the image.";
@@ -95,17 +100,23 @@ if (isset($_POST['edit_product'])) {
         }
     }
 
-    // Update product information in the database
-    $sql = "UPDATE products SET product_name = ?, description = ?, price = ?, image_url = ? WHERE product_id = ?";
+    try {
+        // Update product information in the database using PDO
+        $sql = "UPDATE products SET product_name = :product_name, description = :description, price = :price, image_url = :image_url WHERE product_id = :product_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':product_name', $productName);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':image_url', $imageUrl);
+        $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
 
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("ssssi", $productName, $description, $price, $imageUrl, $productId);
         if ($stmt->execute()) {
             echo "<p class='text-green-500'>Product updated successfully!</p>";
         } else {
-            echo "Error: " . $stmt->error;
+            echo "Error: " . $stmt->errorInfo()[2];
         }
-        $stmt->close();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 
@@ -113,23 +124,31 @@ if (isset($_POST['edit_product'])) {
 if (isset($_GET['delete_product'])) {
     $productId = $_GET['delete_product'];
 
-    // Delete the product from the database
-    $sql = "DELETE FROM products WHERE product_id = ?";
+    try {
+        // Delete the product from the database using PDO
+        $sql = "DELETE FROM products WHERE product_id = :product_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
 
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $productId);
         if ($stmt->execute()) {
             echo "<p class='text-red-500'>Product deleted successfully!</p>";
         } else {
-            echo "Error: " . $stmt->error;
+            echo "Error: " . $stmt->errorInfo()[2];
         }
-        $stmt->close();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 
 // Fetch all products to display for admin
-$sql = "SELECT * FROM products ORDER BY created_at DESC";
-$result = $conn->query($sql);
+try {
+    $sql = "SELECT * FROM products ORDER BY created_at DESC";
+    $stmt = $conn->query($sql);
+
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 ?>
 
 <!DOCTYPE html>
@@ -146,7 +165,7 @@ $result = $conn->query($sql);
     <nav class="bg-indigo-600 p-4 shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="text-white text-2xl font-semibold">
-                <a href="dashboard.php">Admin Dashboard</a>
+                <a href="admin_dashboard.php">Admin Dashboard</a>
             </div>
             <div class="space-x-6 text-white">
                 <a href="profile.php" class="hover:bg-indigo-500 p-2 rounded-md transition">Profile</a>
@@ -186,8 +205,8 @@ $result = $conn->query($sql);
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Existing Products</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <?php
-            if ($result->num_rows > 0) {
-                while ($product = $result->fetch_assoc()) {
+            if (!empty($products)) {
+                foreach ($products as $product) {
                     ?>
                     <div class="bg-white p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
                         <img src="<?php echo $product['image_url']; ?>" alt="<?php echo $product['product_name']; ?>" class="w-full h-48 object-cover rounded-md mb-4">

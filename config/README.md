@@ -1,1 +1,0 @@
-Configuration files for database and site settings.

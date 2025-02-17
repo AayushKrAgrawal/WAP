@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+// Include the database connection
 include '../includes/db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -13,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image_ext = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
 
         // Set the allowed image extensions
-        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif','webp'];
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
         // Check if the uploaded file is a valid image
         if (in_array($image_ext, $allowed_extensions)) {
@@ -23,23 +26,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Move the uploaded image to the assets/images folder
             if (move_uploaded_file($image_tmp, $image_path)) {
-                // Using Prepared Statement to Insert Data
-                $stmt = $conn->prepare("INSERT INTO packages (title, price, image_url, description) VALUES (?, ?, ?, ?)");
+                try {
+                    // Using Prepared Statement to Insert Data
+                    $sql = "INSERT INTO packages (title, price, image_url, description) VALUES (:title, :price, :image_url, :description)";
+                    $stmt = $conn->prepare($sql);
 
-                if ($stmt) {
                     // Bind parameters (s = string, i = integer)
-                    $stmt->bind_param("siss", $title, $price, $image_path, $description);
+                    $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+                    $stmt->bindParam(':price', $price, PDO::PARAM_INT);
+                    $stmt->bindParam(':image_url', $image_path, PDO::PARAM_STR);
+                    $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
                     // Execute the statement
                     if ($stmt->execute()) {
                         header('Location: manage_packages.php');
                         exit();
                     } else {
-                        $error = "Database error: " . $stmt->error;
+                        $error = "Database error: Failed to insert the package.";
                     }
-                    $stmt->close();
-                } else {
-                    $error = "Failed to prepare statement: " . $conn->error;
+                } catch (PDOException $e) {
+                    $error = "Error: " . $e->getMessage();
                 }
             } else {
                 $error = "Error uploading image.";
@@ -108,5 +114,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php
 // Close the database connection
-$conn->close();
+$conn = null;
 ?>

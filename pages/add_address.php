@@ -11,15 +11,15 @@ if (!isset($_SESSION['user_id'])) {
 
 // Fetch all addresses of the user
 $userId = $_SESSION['user_id'];
-$sql = "SELECT * FROM user_addresses WHERE user_id = ? ORDER BY id DESC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$addresses = [];
-while ($row = $result->fetch_assoc()) {
-    $addresses[] = $row;
+try {
+    $sql = "SELECT * FROM user_addresses WHERE user_id = :user_id ORDER BY id DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    $stmt->execute();
+    $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+    exit();
 }
 
 // Processing the address form submission
@@ -34,18 +34,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate if the address is in Nepal
     $validProvinces = ['Bagmati', 'Lumbini', 'Karnali', 'Gandaki', 'Sudurpashchim', 'Province No. 1', 'Province No. 2', 'Province No. 5'];
     if ($province && in_array($province, $validProvinces)) {
-        // Insert the address into the database
-        $sql = "INSERT INTO user_addresses (user_id, address, city, province, postal_code, latitude, longitude) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issssss", $userId, $address, $city, $province, $postalCode, $latitude, $longitude);
-        if ($stmt->execute()) {
-            echo "<script>window.location.href = 'cart.php';</script>";
-        } else {
-            echo "<script>alert('Error adding address.');</script>";
+        try {
+            // Insert the address into the database
+            $sql = "INSERT INTO user_addresses (user_id, address, city, province, postal_code, latitude, longitude) 
+                    VALUES (:user_id, :address, :city, :province, :postal_code, :latitude, :longitude)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':address', $address, PDO::PARAM_STR);
+            $stmt->bindParam(':city', $city, PDO::PARAM_STR);
+            $stmt->bindParam(':province', $province, PDO::PARAM_STR);
+            $stmt->bindParam(':postal_code', $postalCode, PDO::PARAM_STR);
+            $stmt->bindParam(':latitude', $latitude, PDO::PARAM_STR);
+            $stmt->bindParam(':longitude', $longitude, PDO::PARAM_STR);
+
+            if ($stmt->execute()) {
+                echo "<script>window.location.href = 'cart.php';</script>";
+            } else {
+                echo "<script>alert('Error adding address.');</script>";
+            }
+        } catch (PDOException $e) {
+            echo "<script>alert('Error adding address: " . $e->getMessage() . "');</script>";
         }
-    } else {
-       
     }
 }
 
@@ -53,15 +62,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['use_address'])) {
     $addressId = $_GET['use_address'];
 
-    // Set the selected address as default
-    $sql = "UPDATE user_addresses SET is_default = 1 WHERE id = ? AND user_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $addressId, $userId);
-    if ($stmt->execute()) {
-        echo "<script>alert('Address set as default!');</script>";
-        echo "<script>window.location.href = 'checkout.php';</script>";
-    } else {
-        echo "<script>alert('Error setting default address.');</script>";
+    try {
+        // Set the selected address as default
+        $sql = "UPDATE user_addresses SET is_default = 1 WHERE id = :address_id AND user_id = :user_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':address_id', $addressId, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            echo "<script>alert('Address set as default!');</script>";
+            echo "<script>window.location.href = 'checkout.php';</script>";
+        } else {
+            echo "<script>alert('Error setting default address.');</script>";
+        }
+    } catch (PDOException $e) {
+        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
     }
 }
 ?>

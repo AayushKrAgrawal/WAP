@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Set the allowed image extensions
         $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-        
+
         // Check if the uploaded file is a valid image
         if (in_array($image_ext, $allowed_extensions)) {
             // Define the upload directory and generate a unique filename
@@ -32,24 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Move the uploaded image to the assets/images folder
             if (move_uploaded_file($image_tmp, $image_path)) {
                 
-                // Using Prepared Statement to Insert Data
-                $stmt = $conn->prepare("INSERT INTO boxes (name, description, image_url, price) VALUES (?, ?, ?, ?)");
-                if ($stmt) {
-                    // Bind parameters (s = string, i = integer)
-                    $stmt->bind_param("sssi", $name, $description, $image_path, $price);
-                    
-                    // Execute the statement
-                    if ($stmt->execute()) {
-                        // Redirect to manage boxes page on success
-                        header("Location: manage_boxes.php");
-                        exit();
-                    } else {
-                        $error = "Error: " . $stmt->error;
-                    }
-                    // Close the statement
-                    $stmt->close();
-                } else {
-                    $error = "Error: " . $conn->error;
+                try {
+                    // Using Prepared Statement to Insert Data with PDO
+                    $stmt = $conn->prepare("INSERT INTO boxes (name, description, image_url, price) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$name, $description, $image_path, $price]);
+
+                    // Redirect to manage boxes page on success
+                    header("Location: manage_boxes.php");
+                    exit();
+                } catch (PDOException $e) {
+                    $error = "Error: " . $e->getMessage();
                 }
             } else {
                 $error = "Error uploading image.";
@@ -117,5 +109,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </html>
 
 <?php
-$conn->close();
+$conn = null; // Close the PDO connection
 ?>

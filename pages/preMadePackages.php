@@ -67,22 +67,32 @@ include '../includes/db_connect.php'; // Include your database connection file
             <!-- Packages Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
-                    // Fetch packages from the packages table
-                    $query = "SELECT * FROM packages";
-                    $result = mysqli_query($conn, $query);
-
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo renderCard([
-                                "imageUrl" => $row['image_url'], 
-                                "link" => "preMadePackage_detail.php?id=" . $row['id'], // Pass package ID in URL
-                                "title" => $row['title'], 
-                                "description" => $row['description'], 
-                                "price" => "" . $row['price']
-                            ]);
+                    try {
+                        // PDO connection
+                        $pdo = new PDO("mysql:host=localhost;dbname=hamroPratibha", "root", "");
+                        // Set PDO error mode to exception
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        
+                        // Prepare SQL query
+                        $query = "SELECT * FROM packages";
+                        $stmt = $pdo->query($query);
+                        
+                        // Check if there are rows
+                        if ($stmt->rowCount() > 0) {
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo renderCard([
+                                    "imageUrl" => $row['image_url'], 
+                                    "link" => "preMadePackage_detail.php?id=" . $row['id'], // Pass package ID in URL
+                                    "title" => $row['title'], 
+                                    "description" => $row['description'], 
+                                    "price" => "" . $row['price']
+                                ]);
+                            }
+                        } else {
+                            echo "<p class='text-gray-600'>No packages found.</p>";
                         }
-                    } else {
-                        echo "<p class='text-gray-600'>No packages found.</p>";
+                    } catch (PDOException $e) {
+                        echo "Error: " . $e->getMessage();
                     }
                 ?>
             </div>
@@ -92,4 +102,4 @@ include '../includes/db_connect.php'; // Include your database connection file
 </body>
 </html>
 
-<?php include '../includes/footer.php'; ?>  
+<?php include '../includes/footer.php'; ?>

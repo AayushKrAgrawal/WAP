@@ -64,22 +64,30 @@ include '../includes/db_connect.php'; // Include your database connection file
             <!-- Boxes Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
-                    // Fetch boxes from database
-                    $query = "SELECT * FROM boxes";
-                    $result = mysqli_query($conn, $query);
+                    try {
+                        // Prepare the query to fetch boxes from the database
+                        $query = "SELECT * FROM boxes";
+                        $stmt = $conn->prepare($query);
+                        $stmt->execute();
 
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo renderCard([
-                                "imageUrl" => $row['image_url'], 
-                                "link" => "box_detail.php?id=" . $row['id'], // Pass box ID in URL
-                                "title" => $row['name'], 
-                                "description" => $row['description'], 
-                                "price" => "" . $row['price']
-                            ]);
+                        // Fetch results
+                        $boxes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        if (count($boxes) > 0) {
+                            foreach ($boxes as $box) {
+                                echo renderCard([
+                                    "imageUrl" => $box['image_url'], 
+                                    "link" => "box_detail.php?id=" . $box['id'], // Pass box ID in URL
+                                    "title" => $box['name'], 
+                                    "description" => $box['description'], 
+                                    "price" => "" . $box['price']
+                                ]);
+                            }
+                        } else {
+                            echo "<p class='text-gray-600'>No boxes found.</p>";
                         }
-                    } else {
-                        echo "<p class='text-gray-600'>No boxes found.</p>";
+                    } catch (PDOException $e) {
+                        echo "<p class='text-red-600'>Error: " . $e->getMessage() . "</p>";
                     }
                 ?>
             </div>
@@ -89,4 +97,4 @@ include '../includes/db_connect.php'; // Include your database connection file
 </body>
 </html>
 
-<?php include '../includes/footer.php'; ?>  
+<?php include '../includes/footer.php'; ?>

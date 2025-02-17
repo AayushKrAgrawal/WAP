@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../includes/db_connect.php');
+include('../includes/db_connect.php'); // Make sure your db_connect.php file uses PDO
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -11,16 +11,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 if (isset($_GET['product_id'])) {
     $productId = $_GET['product_id'];
 
-    // Fetch product details
+    // Fetch product details using PDO
     $sql = "SELECT * FROM products WHERE product_id = ?";
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $productId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->execute([$productId]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result->num_rows > 0) {
-            $product = $result->fetch_assoc();
-        } else {
+        if (!$product) {
             echo "Product not found.";
             exit;
         }
@@ -41,15 +38,15 @@ if (isset($_GET['product_id'])) {
             exit;
         }
 
+        // Update product details in database using PDO
         $sql = "UPDATE products SET product_name = ?, description = ?, price = ?, image_url = ? WHERE product_id = ?";
-
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("ssssi", $productName, $description, $price, $imageUrl, $productId);
-            if ($stmt->execute()) {
-                header("Location: manage_products.php");
-            } else {
-                echo "Error: " . $stmt->error;
-            }
+            $stmt->execute([$productName, $description, $price, $imageUrl, $productId]);
+            header("Location: manage_products.php");
+            exit;
+        } else {
+            echo "Error: " . $stmt->errorInfo()[2];
+            exit;
         }
     }
 }

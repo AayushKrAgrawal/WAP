@@ -36,25 +36,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO users (first_name, last_name, email, phone, dob, gender, password_hash, terms_agreed, role)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("sssssssss", $firstName, $lastName, $email, $phone, $dob, $gender, $passwordHash, $termsAgreed, $role);
+        try {
+            $sql = "INSERT INTO users (first_name, last_name, email, phone, dob, gender, password_hash, terms_agreed, role)
+                    VALUES (:firstName, :lastName, :email, :phone, :dob, :gender, :passwordHash, :termsAgreed, :role)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':firstName', $firstName);
+            $stmt->bindParam(':lastName', $lastName);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':dob', $dob);
+            $stmt->bindParam(':gender', $gender);
+            $stmt->bindParam(':passwordHash', $passwordHash);
+            $stmt->bindParam(':termsAgreed', $termsAgreed);
+            $stmt->bindParam(':role', $role);
 
             if ($stmt->execute()) {
                 $_SESSION['success_message'] = "Registration successful! Please log in.";
                 header("Location: /hamroPratibha/pages/login.php");
                 exit;
             } else {
-                $_SESSION['error_message'] = "Error: " . $stmt->error;
+                $_SESSION['error_message'] = "Error: Unable to complete registration.";
                 header("Location: /hamroPratibha/pages/signup.php");
                 exit;
             }
-
-            $stmt->close();
-        } else {
-            $_SESSION['error_message'] = "Error preparing the statement: " . $conn->error;
+        } catch (PDOException $e) {
+            $_SESSION['error_message'] = "Database error: " . $e->getMessage();
             header("Location: /hamroPratibha/pages/signup.php");
             exit;
         }
@@ -71,15 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        $sql = "SELECT * FROM users WHERE email = ? OR phone = ? LIMIT 1";
-
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("ss", $emailOrPhone, $emailOrPhone);
+        try {
+            $sql = "SELECT * FROM users WHERE email = :emailOrPhone OR phone = :emailOrPhone LIMIT 1";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':emailOrPhone', $emailOrPhone);
             $stmt->execute();
-            $result = $stmt->get_result();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($result->num_rows > 0) {
-                $user = $result->fetch_assoc();
+            if ($user) {
                 if (password_verify($password, $user['password_hash'])) {
                     session_regenerate_id();  // Regenerate session ID to prevent session fixation
                     $_SESSION['user_id'] = $user['user_id'];
@@ -104,15 +109,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: /hamroPratibha/pages/login.php");
                 exit;
             }
-
-            $stmt->close();
-        } else {
-            $_SESSION['error_message'] = "Error preparing the statement: " . $conn->error;
+        } catch (PDOException $e) {
+            $_SESSION['error_message'] = "Database error: " . $e->getMessage();
             header("Location: /hamroPratibha/pages/login.php");
             exit;
         }
     }
-
-    $conn->close();
 }
 ?>

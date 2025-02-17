@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
-// Fetch cart items for the user, including products, boxes, and packages
+// Fetch cart items for the user, including products, boxes, and packages using PDO
 $sql = "SELECT c.cart_id, 
                 c.product_quantity, c.boxes_quantity, c.package_quantity,
                 p.product_name, p.price AS product_price, p.image_url, 
@@ -21,11 +21,12 @@ $sql = "SELECT c.cart_id,
         LEFT JOIN products p ON c.product_id = p.product_id
         LEFT JOIN boxes b ON c.boxes_id = b.id
         LEFT JOIN packages pkg ON c.package_id = pkg.id
-        WHERE c.user_id = ?";
+        WHERE c.user_id = :user_id";
+        
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
+$stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $totalCost = 0;
 ?>
 
@@ -42,10 +43,10 @@ $totalCost = 0;
     <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-extrabold text-gray-800 mb-8">Your Shopping Cart</h1>
 
-        <?php if ($result->num_rows > 0): ?>
+        <?php if (count($result) > 0): ?>
             <div class="shadow-md rounded-lg overflow-hidden">
                 <ul class="divide-y divide-gray-200">
-                    <?php while ($item = $result->fetch_assoc()): ?>
+                    <?php foreach ($result as $item): ?>
                         <?php
                             // Calculate cost for each item type
                             if ($item['product_name']) {
@@ -104,7 +105,7 @@ $totalCost = 0;
                                 </div>
                             </div>
                         </li>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </ul>
 
                 <div class="bg-gray-100 px-4 py-6 sm:px-6">

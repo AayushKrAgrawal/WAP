@@ -2,7 +2,7 @@
 session_start();
 ob_start(); // Start output buffering
 include('../includes/header.php');
-include('../includes/db_connect.php');
+include('../includes/db_connect.php'); // Assuming the db_connect.php file is using PDO for database connection
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -15,20 +15,15 @@ if (isset($_GET['id'])) {
     $packageId = $_GET['id'];
 
     // Fetch package details
-    $sql = "SELECT * FROM packages WHERE id = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $packageId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $sql = "SELECT * FROM packages WHERE id = :id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id', $packageId, PDO::PARAM_INT);
+    $stmt->execute();
 
-        if ($result->num_rows > 0) {
-            $package = $result->fetch_assoc();
-        } else {
-            echo "<p>Package not found.</p>";
-            exit();
-        }
+    if ($stmt->rowCount() > 0) {
+        $package = $stmt->fetch(PDO::FETCH_ASSOC);
     } else {
-        echo "<p>Error fetching package details.</p>";
+        echo "<p>Package not found.</p>";
         exit();
     }
 } else {
@@ -43,23 +38,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $userId = $_SESSION['user_id'];
 
     // Check if package is already in cart
-    $checkSql = "SELECT * FROM cart WHERE user_id = ? AND package_id = ?";
+    $checkSql = "SELECT * FROM cart WHERE user_id = :user_id AND package_id = :package_id";
     $stmt = $conn->prepare($checkSql);
-    $stmt->bind_param("ii", $userId, $packageId);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    $stmt->bindParam(':package_id', $packageId, PDO::PARAM_INT);
     $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
+    if ($stmt->rowCount() > 0) {
         // If package already in cart, update quantity
-        $updateSql = "UPDATE cart SET package_quantity = package_quantity + ? WHERE user_id = ? AND package_id = ?";
+        $updateSql = "UPDATE cart SET package_quantity = package_quantity + :quantity WHERE user_id = :user_id AND package_id = :package_id";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("iii", $quantity, $userId, $packageId);
+        $updateStmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $updateStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $updateStmt->bindParam(':package_id', $packageId, PDO::PARAM_INT);
         $updateStmt->execute();
     } else {
         // If package not in cart, insert new record
-        $insertSql = "INSERT INTO cart (user_id, package_id, package_quantity) VALUES (?, ?, ?)";
+        $insertSql = "INSERT INTO cart (user_id, package_id, package_quantity) VALUES (:user_id, :package_id, :package_quantity)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("iii", $userId, $packageId, $quantity);
+        $insertStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':package_id', $packageId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':package_quantity', $quantity, PDO::PARAM_INT);
         $insertStmt->execute();
     }
 
@@ -70,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 }
 
 // Fetch related packages (random or based on category)
-$relatedPackagesSql = "SELECT * FROM packages WHERE id != ? LIMIT 4";
+$relatedPackagesSql = "SELECT * FROM packages WHERE id != :id LIMIT 4";
 $relatedStmt = $conn->prepare($relatedPackagesSql);
-$relatedStmt->bind_param("i", $packageId);
+$relatedStmt->bindParam(':id', $packageId, PDO::PARAM_INT);
 $relatedStmt->execute();
-$relatedPackagesResult = $relatedStmt->get_result();
+$relatedPackagesResult = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
