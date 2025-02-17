@@ -232,10 +232,47 @@ At Hamro Pratibha, we believe gifting is about connection, and we aim to provide
                     Currently, we do not offer international shipping. However, if we start offering it in the future, we will announce it on our website and social media channels.
                 </p>
             </div>
+
+            <!-- FAQ Item 4 -->
+            <div x-data="{ open: false }">
+                <h3 @click="open = !open" class="cursor-pointer text-xl font-semibold text-left p-4 bg-white shadow-md rounded-lg transition-all duration-300 hover:bg-[#B82132] hover:text-white">
+                    What should I do if I am unable to log in?
+                </h3>
+                <p x-show="open" x-transition class="text-gray-600 p-4 bg-gray-50 rounded-lg">
+                    Double-check your email and password for any typos.
+                    Click on "Forgot Password?" and follow the instructions to reset your password.
+                    Ensure that your account is verified via email. If you haven’t received the verification email, check your spam folder or request a new one.
+                </p>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div x-data="{ open: false }">
+                <h3 @click="open = !open" class="cursor-pointer text-xl font-semibold text-left p-4 bg-white shadow-md rounded-lg transition-all duration-300 hover:bg-[#B82132] hover:text-white">
+                    What should I do if my payment fails?
+                </h3>
+                <p x-show="open" x-transition class="text-gray-600 p-4 bg-gray-50 rounded-lg">
+                    Verify that your card details (card number, CVV, expiry date) are entered correctly.
+                    Ensure that your card has sufficient balance and is enabled for online transactions.
+                    Try a different payment method or contact your bank for assistance.
+                    If the issue persists, clear your browser cache and try again.
+                </p>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div x-data="{ open: false }">
+                <h3 @click="open = !open" class="cursor-pointer text-xl font-semibold text-left p-4 bg-white shadow-md rounded-lg transition-all duration-300 hover:bg-[#B82132] hover:text-white">
+                    What can I do if the website is not loading properly?
+                </h3>
+                <p x-show="open" x-transition class="text-gray-600 p-4 bg-gray-50 rounded-lg">
+                    Check for a slow or unstable internet connection.
+                    Clear your browser cache, as it might be causing issues.
+                    The website may be down temporarily due to server maintenance.
+                </p>
+            </div>
         </div>
     </div>
 </div>
-<!-- Thank You & Feedback Section -->
+
 <!-- Thank You & Feedback Section -->
 <div class="py-16 px-4 md:px-20 bg-[#F5EFFF]">
     <div class="max-w-7xl mx-auto text-center">
