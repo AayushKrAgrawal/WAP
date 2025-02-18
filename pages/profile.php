@@ -1,9 +1,9 @@
 <?php
 // Include the database connection
 include('../includes/db_connect.php');
+include('../includes/header.php');
 
 // Start session to manage logged-in users
-session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -34,7 +34,6 @@ try {
 
 // Handle the profile update request
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Update Profile
     if (isset($_POST['update_profile'])) {
         $newFirstName = $_POST['first_name'];
         $newLastName = $_POST['last_name'];
@@ -62,44 +61,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Delete Account
-if (isset($_POST['delete_account'])) {
-    try {
-        // 1. Delete from `cart` first
-        $deleteCartSql = "DELETE FROM cart WHERE user_id = :user_id";
-        $deleteCartStmt = $conn->prepare($deleteCartSql);
-        $deleteCartStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $deleteCartStmt->execute();
-
-        // 2. Delete from `order_items` linked to user's orders
-        $deleteOrderItemsSql = "DELETE FROM order_items WHERE order_id IN (SELECT order_id FROM orders WHERE user_id = :user_id)";
-        $deleteOrderItemsStmt = $conn->prepare($deleteOrderItemsSql);
-        $deleteOrderItemsStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $deleteOrderItemsStmt->execute();
-
-        // 3. Delete from `orders` to maintain referential integrity
-        $deleteOrdersSql = "DELETE FROM orders WHERE user_id = :user_id";
-        $deleteOrdersStmt = $conn->prepare($deleteOrdersSql);
-        $deleteOrdersStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $deleteOrdersStmt->execute();
-
-        // 4. Finally, delete the user from `users` table
-        $deleteSql = "DELETE FROM users WHERE user_id = :user_id";
-        $deleteStmt = $conn->prepare($deleteSql);
-        $deleteStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $deleteStmt->execute();
-
-        // 5. Destroy session and redirect to registration page
-        session_destroy();
-        header('Location: login.php');
-        exit();
-    } catch (PDOException $e) {
-        echo "<p>Error deleting account: " . $e->getMessage() . "</p>";
+    // Handle account deletion
+    if (isset($_POST['delete_account'])) {
+        try {
+            $deleteSql = "DELETE FROM users WHERE user_id = :user_id";
+            $deleteStmt = $conn->prepare($deleteSql);
+            $deleteStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $deleteStmt->execute();
+            session_destroy();
+            header('Location: register.php'); // Redirect to registration page after deletion
+            exit();
+        } catch (PDOException $e) {
+            echo "<p>Error deleting account: " . $e->getMessage() . "</p>";
+        }
     }
-}
-
-
-
 }
 ?>
 
@@ -122,13 +97,8 @@ if (isset($_POST['delete_account'])) {
 </head>
 <body class="bg-gray-100 font-sans tracking-wide">
 
-    <!-- Navbar -->
-    <nav class="bg-blue-600 p-4 text-white">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="dashboard.php" class="text-xl">Dashboard</a>
-            <a href="logout.php" class="hover:text-gray-300">Logout</a>
-        </div>
-    </nav>
+    <!-- Navbar (you can customize this) -->
+    
 
     <!-- User Profile Section -->
     <div class="container mx-auto px-4 py-10">
@@ -171,15 +141,16 @@ if (isset($_POST['delete_account'])) {
                     <input type="date" name="dob" id="dob" value="<?php echo htmlspecialchars($user['dob']); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-md" required>
                 </div>
 
-                <!-- Update Profile Button -->
+                <!-- Submit button to update profile -->
                 <button type="submit" name="update_profile" class="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Update Profile</button>
             </form>
 
             <form method="POST" action="profile.php" class="mt-4">
-                <!-- Delete Account Button -->
+                <!-- Button to delete account -->
                 <button type="submit" name="delete_account" class="w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete Account</button>
             </form>
         </div>
     </div>
+
 </body>
 </html>

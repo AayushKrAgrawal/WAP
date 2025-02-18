@@ -161,6 +161,38 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .back-btn:hover {
             background-color: #45a049;
         }
+
+        /* Custom Pop-up Styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+        }
+        .popup button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .popup button.cancel {
+            background-color: #f44336;
+        }
     </style>
 </head>
 <body>
@@ -196,7 +228,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 echo "<td>" . htmlspecialchars($row['gender']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['role']) . "</td>";
                                 echo "<td>
-                                        <a href='?update_role=" . ($row['role'] == 'user' ? 'user' : 'admin') . "&user_id=" . $row['user_id'] . "' class='action-btn update-role'>
+                                        <a href='#' onclick='confirmRoleChange(" . $row['user_id'] . ", \"" . ($row['role'] == 'user' ? 'user' : 'admin') . "\")' class='action-btn update-role'>
                                             " . ($row['role'] == 'user' ? 'Make Admin' : 'Make User') . "
                                         </a> | 
                                         <a href='#' onclick='confirmDelete(" . $row['user_id'] . ")' class='action-btn delete-btn'>
@@ -215,13 +247,45 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
+    <!-- Confirmation Popup -->
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup">
+            <p id="popup-message">Are you sure you want to perform this action?</p>
+            <button id="popup-confirm" onclick="confirmAction()">Yes</button>
+            <button class="cancel" onclick="closePopup()">No</button>
+        </div>
+    </div>
+
     <script>
+        let userIdToDelete;
+        let actionType;
+
         function confirmDelete(userId) {
-            const confirmation = confirm('Are you sure you want to delete this user?');
-            if (confirmation) {
-                // If confirmed, redirect to the delete URL
-                window.location.href = '?delete_user=true&user_id=' + userId;
+            userIdToDelete = userId;
+            actionType = 'delete';
+            document.getElementById("popup-message").textContent = "Are you sure you want to delete this user?";
+            document.getElementById("popup-overlay").style.display = "flex";
+        }
+
+        function confirmRoleChange(userId, newRole) {
+            userIdToDelete = userId;
+            actionType = 'roleChange';
+            document.getElementById("popup-message").textContent = `Are you sure you want to change this user's role to ${newRole}?`;
+            document.getElementById("popup-overlay").style.display = "flex";
+        }
+
+        function confirmAction() {
+            if (actionType === 'delete') {
+                window.location.href = '?delete_user=true&user_id=' + userIdToDelete;
+            } else if (actionType === 'roleChange') {
+                const newRole = actionType === 'roleChange' ? 'admin' : 'user';
+                window.location.href = '?update_role=' + newRole + '&user_id=' + userIdToDelete;
             }
+            closePopup();
+        }
+
+        function closePopup() {
+            document.getElementById("popup-overlay").style.display = "none";
         }
     </script>
 

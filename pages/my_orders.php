@@ -18,7 +18,7 @@ if (isset($_GET['cancel_order_id'])) {
     $orderIdToCancel = $_GET['cancel_order_id'];
 
     // Update the status to 'cancelled' in the database
-    $sqlCancelOrder = "UPDATE orders SET status = 'cancelled' WHERE order_id = :order_id AND user_id = :user_id";
+    $sqlCancelOrder = "UPDATE orders SET status = 'canceled' WHERE order_id = :order_id AND user_id = :user_id";
     $stmtCancelOrder = $conn->prepare($sqlCancelOrder);
     $stmtCancelOrder->bindParam(':order_id', $orderIdToCancel, PDO::PARAM_INT);
     $stmtCancelOrder->bindParam(':user_id', $userId, PDO::PARAM_INT);

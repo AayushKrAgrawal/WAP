@@ -37,7 +37,7 @@ if (isset($_GET['update_status']) && isset($_GET['order_id'])) {
     $orderId = $_GET['order_id'];
 
     // Ensure the status is valid
-    $validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
+    $validStatuses = ['pending', 'processing', 'completed', 'canceled'];
     if (in_array($newStatus, $validStatuses)) {
         $sqlUpdateStatus = "UPDATE orders SET status = :status WHERE order_id = :order_id";
         $stmtUpdateStatus = $conn->prepare($sqlUpdateStatus);
@@ -54,7 +54,7 @@ if (isset($_GET['update_status']) && isset($_GET['order_id'])) {
 // Cancel order if requested
 if (isset($_GET['cancel_order_id'])) {
     $orderIdToCancel = $_GET['cancel_order_id'];
-    $sqlCancelOrder = "UPDATE orders SET status = 'cancelled' WHERE order_id = :order_id";
+    $sqlCancelOrder = "UPDATE orders SET status = 'canceled' WHERE order_id = :order_id";
     $stmtCancelOrder = $conn->prepare($sqlCancelOrder);
     $stmtCancelOrder->bindParam(':order_id', $orderIdToCancel, PDO::PARAM_INT);
     $stmtCancelOrder->execute();
@@ -115,7 +115,7 @@ if (isset($_GET['cancel_order_id'])) {
                                 <option value="pending" <?php echo $order['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
                                 <option value="processing" <?php echo $order['status'] == 'processing' ? 'selected' : ''; ?>>Processing</option>
                                 <option value="completed" <?php echo $order['status'] == 'completed' ? 'selected' : ''; ?>>Completed</option>
-                                <option value="cancelled" <?php echo $order['status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                                <option value="canceled" <?php echo $order['status'] == 'canceled' ? 'selected' : ''; ?>>Cancelled</option>
                             </select>
                             <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                             <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded mt-2">Update Status</button>
