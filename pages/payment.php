@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     } else {
         // If no payment method is selected, show an error message
-        $errorMessage = "Please select a payment method.";
+        $errorMessage = "Please select a payment method below.";
     }
 }
 ob_end_flush(); // Send output buffer content to browser
@@ -120,7 +120,7 @@ ob_end_flush(); // Send output buffer content to browser
 
         <?php if (isset($errorMessage)): ?>
             <div class="bg-red-100 text-red-800 p-4 rounded mb-8">
-                <p class="font-bold">Error: <?php echo htmlspecialchars($errorMessage); ?></p>
+                <p class="font-bold"><?php echo htmlspecialchars($errorMessage); ?></p>
             </div>
         <?php endif; ?>
 

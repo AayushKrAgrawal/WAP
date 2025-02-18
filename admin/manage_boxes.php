@@ -3,7 +3,7 @@ session_start();
 
 // Check if admin is logged in
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: /hamroPratibha/pages/login.php");
+    header("Location: ../pages/login.php");
     exit();
 }
 
@@ -29,7 +29,7 @@ $stmt->execute();
     <!-- Header Section -->
     <section class="text-center py-12 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
         <h1 class="text-4xl font-bold">Manage Boxes</h1>
-        <a href="add_box.php" class="mt-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">Add New Box</a>
+        <a href="add_box.php" class="mt-6 inline-block bg-[#B82132] text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">Add New Box</a>
     </section>
 
     <!-- Back to Dashboard Button -->

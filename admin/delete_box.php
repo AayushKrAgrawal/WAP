@@ -3,7 +3,7 @@ session_start();
 
 // Check if admin is logged in
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: /hamroPratibha/pages/login.php");
+    header("Location: ../pages/login.php");
     exit();
 }
 

@@ -4,7 +4,7 @@ include('../includes/db_connect.php');
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: /hamroPratibha/pages/login.php");
+    header("Location: ../pages/login.php");
     exit();
 }
 
@@ -28,13 +28,44 @@ if (isset($_GET['update_role']) && isset($_GET['user_id'])) {
 if (isset($_GET['delete_user']) && isset($_GET['user_id'])) {
     $userId = $_GET['user_id'];
 
-    $sql = "DELETE FROM users WHERE user_id = :user_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-    if ($stmt->execute()) {
+    try {
+        // Start a transaction
+        $conn->beginTransaction();
+
+        // Step 1: Delete related cart entries first
+        $sql = "DELETE FROM cart WHERE user_id = :user_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Step 2: Delete related order_items entries
+        $sql = "DELETE oi FROM order_items oi
+                INNER JOIN orders o ON oi.order_id = o.order_id
+                WHERE o.user_id = :user_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Step 3: Delete related orders entries
+        $sql = "DELETE FROM orders WHERE user_id = :user_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Step 4: Now delete the user
+        $sql = "DELETE FROM users WHERE user_id = :user_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Commit the transaction
+        $conn->commit();
         header("Location: manage_users.php"); // Refresh the page after deleting
-    } else {
-        echo "Error deleting user: " . $stmt->errorInfo()[2];
+
+    } catch (PDOException $e) {
+        // Rollback if something goes wrong
+        $conn->rollBack();
+        echo "Cannot delete user due to related data: " . $e->getMessage();
     }
 }
 
@@ -168,7 +199,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <a href='?update_role=" . ($row['role'] == 'user' ? 'user' : 'admin') . "&user_id=" . $row['user_id'] . "' class='action-btn update-role'>
                                             " . ($row['role'] == 'user' ? 'Make Admin' : 'Make User') . "
                                         </a> | 
-                                        <a href='?delete_user=true&user_id=" . $row['user_id'] . "' class='action-btn delete-btn'>
+                                        <a href='#' onclick='confirmDelete(" . $row['user_id'] . ")' class='action-btn delete-btn'>
                                             Delete
                                         </a>
                                       </td>";
@@ -183,6 +214,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+
+    <script>
+        function confirmDelete(userId) {
+            const confirmation = confirm('Are you sure you want to delete this user?');
+            if (confirmation) {
+                // If confirmed, redirect to the delete URL
+                window.location.href = '?delete_user=true&user_id=' + userId;
+            }
+        }
+    </script>
 
 </body>
 </html>

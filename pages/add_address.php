@@ -136,7 +136,7 @@ if (isset($_GET['use_address'])) {
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label for="province" class="block text-gray-700 font-semibold">Province</label>
+                        <label for="provin      ce" class="block text-gray-700 font-semibold">Province</label>
                         <select id="province" name="province" class="mt-2 p-3 w-full border border-gray-300 rounded-md" required>
                             <option value="">Select Province</option>
                             <option value="Bagmati">Bagmati</option>

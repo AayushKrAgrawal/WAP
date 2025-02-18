@@ -4,7 +4,7 @@ include('../includes/db_connect.php'); // Make sure the db_connect.php file uses
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: /hamroPratibha/pages/login.php");
+    header("Location: ../pages/login.php");
     exit();
 }
 

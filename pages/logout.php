@@ -7,6 +7,6 @@ session_unset();
 session_destroy();
 
 // Redirect to login page
-header("Location: /hamroPratibha/pages/index.php");
+header("Location: ../pages/index.php");
 exit();
 ?>
