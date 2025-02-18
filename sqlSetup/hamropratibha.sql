@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2025 at 07:39 PM
+-- Generation Time: Feb 18, 2025 at 01:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `hamropratibha`
 --
-
+create database hamropratibha;
+use hamropratibha;
 -- --------------------------------------------------------
 
 --
@@ -78,14 +79,10 @@ INSERT INTO `cart` (`cart_id`, `user_id`, `product_id`, `product_quantity`, `add
 (43, 7, NULL, NULL, '2025-02-15 16:39:59', NULL, 1, NULL, 4),
 (44, 7, 12, 2, '2025-02-15 16:40:10', NULL, NULL, NULL, NULL),
 (46, 7, 15, 3, '2025-02-15 16:40:18', NULL, NULL, NULL, NULL),
-(49, 1, NULL, NULL, '2025-02-17 15:06:22', NULL, 9, NULL, 1),
-(54, 8, 3, 4, '2025-02-17 16:34:58', NULL, NULL, NULL, NULL),
-(55, 8, NULL, NULL, '2025-02-17 16:37:56', 5, NULL, 2, NULL),
-(56, 8, NULL, NULL, '2025-02-17 16:41:58', 4, NULL, 1, NULL),
-(57, 1, NULL, NULL, '2025-02-17 17:56:57', 4, NULL, 3, NULL),
-(58, 1, 6, 2, '2025-02-17 17:57:07', NULL, NULL, NULL, NULL),
-(59, 1, 9, 1, '2025-02-17 17:57:10', NULL, NULL, NULL, NULL),
-(60, 1, NULL, NULL, '2025-02-17 17:57:23', NULL, 3, NULL, 2);
+(78, 16, 6, 3, '2025-02-18 12:19:50', NULL, NULL, NULL, NULL),
+(79, 16, NULL, NULL, '2025-02-18 12:19:57', 5, NULL, 1, NULL),
+(80, 16, NULL, NULL, '2025-02-18 12:20:04', 9, NULL, 2, NULL),
+(81, 16, NULL, NULL, '2025-02-18 12:20:11', NULL, 3, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -113,9 +110,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `shipping_address`, `city`, `province`, `postal_code`, `latitude`, `longitude`, `total_cost`, `payment_method`, `order_date`, `status`) VALUES
-(1, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-17 17:54:42', 'completed'),
-(2, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-17 17:56:25', 'processing'),
-(3, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-17 17:57:39', 'completed');
+(9, 16, 'Chhetrapati ', 'Kathmandu', 'Bagmati', '3006', 0.000000, 0.000000, 0.00, '', '2025-02-18 12:20:41', 'pending');
 
 -- --------------------------------------------------------
 
@@ -140,13 +135,10 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `box_id`, `package_id`, `product_name`, `quantity`, `price`, `total`) VALUES
-(1, 1, NULL, NULL, NULL, 'Pouch only packaging ', 1, 60.00, 60.00),
-(2, 2, NULL, NULL, NULL, 'Pouch only packaging ', 1, 60.00, 60.00),
-(3, 3, NULL, NULL, NULL, 'Pouch only packaging ', 1, 60.00, 60.00),
-(4, 3, NULL, NULL, NULL, 'Sajilo Gift Box (सजिलो)', 3, 500.00, 1500.00),
-(5, 3, NULL, NULL, NULL, 'Buddhist Incense', 2, 50.00, 100.00),
-(6, 3, NULL, NULL, NULL, 'Lokta Paper Journal', 1, 500.00, 500.00),
-(7, 3, NULL, NULL, NULL, 'Clothed Box Packaging ', 2, 450.00, 900.00);
+(28, 9, NULL, NULL, NULL, 'Buddhist Incense', 3, 50.00, 150.00),
+(29, 9, NULL, NULL, NULL, 'Mitho Gift Box (मिठो) ', 1, 1000.00, 1000.00),
+(30, 9, NULL, NULL, NULL, 'Maharani Gift Box (महारानी) ', 2, 3000.00, 6000.00),
+(31, 9, NULL, NULL, NULL, 'Clothed Box Packaging ', 1, 450.00, 450.00);
 
 -- --------------------------------------------------------
 
@@ -168,7 +160,7 @@ CREATE TABLE `packages` (
 --
 
 INSERT INTO `packages` (`id`, `title`, `price`, `image_url`, `description`, `created_at`) VALUES
-(4, 'Sajilo Gift Box (सजिलो)', 500.00, '../assets/images/67b353fea865c.webp', 'Sajilo means easy, and this box offers a curated selection of simple, thoughtful gifts that bring comfort and a touch of Nepali culture to everyday life. From local snacks to sustainable, practical items, it\'s the perfect pick-me-up for anyone looking to experience Nepal in a meaningful way.\r\n\r\nPackaging: Simple Paper Pouch Packaging (Rs. 50) \r\n• Masala Peanuts (Rs. 150)\r\nThese crunchy peanuts are coated in a flavorful blend of spices, perfect for snacking during a busy day. A savory and spicy treat!\r\n• Handmade Lokta Paper Notebook (Rs. 200) \r\nCrafted from traditional Nepali Lokta paper, this notebook features a soft, durable cover and blank pages, making it ideal for journaling, sketching, or note-taking.\r\n• Herbal Lip Balm (Rs. 100) \r\nA soothing lip balm made with organic ingredients such as beeswax and essential oils, providing moisture and protection for your lips.\r\n', '2025-02-17 15:21:34'),
+(4, 'Sajilo Gift Box (सजिलो)', 550.00, '../assets/images/67b353fea865c.webp', 'Sajilo means easy, and this box offers a curated selection of simple, thoughtful gifts that bring comfort and a touch of Nepali culture to everyday life. From local snacks to sustainable, practical items, it\'s the perfect pick-me-up for anyone looking to experience Nepal in a meaningful way.Packaging: Simple Paper Pouch Packaging (Rs. 50) • Masala Peanuts (Rs. 150)These crunchy peanuts are coated in a flavorful blend of spices, perfect for snacking during a busy day. A savory and spicy treat!• Handmade Lokta Paper Notebook (Rs. 200) Crafted from traditional Nepali Lokta paper, this notebook features a soft, durable cover and blank pages, making it ideal for journaling, sketching, or note-taking.• Herbal Lip Balm (Rs. 100) A soothing lip balm made with organic ingredients such as beeswax and essential oils, providing moisture and protection for your lips.', '2025-02-17 15:21:34'),
 (5, 'Mitho Gift Box (मिठो) ', 1000.00, '../assets/images/67b3541e420de.jpg', 'Mitho means sweet, and this box is a celebration of life\'s little luxuries! Filled with relaxing and indulgent gifts, it offers a blend of cultural and wellness items that give you a taste of Nepali luxury. Perfect for those who enjoy handmade goods and traditional treats.\r\nPackaging: Handmade Lokta Paper Box (Rs. 150) \r\n• Organic Honey (Rs. 300) \r\nHarvested from the Himalayan region, this organic honey is rich in flavor, perfect for tea or as a natural sweetener in your favorite recipes.\r\n• Handwoven Cotton Shawl (Rs. 400) \r\nSoft and cozy, this traditional cotton shawl is handwoven with intricate patterns, adding warmth and elegance to any outfit.\r\n• Clay Aroma Diffuser (Rs. 150) \r\nThis handmade diffuser uses essential oils to create a soothing atmosphere in your home, helping you relax and unwind after a busy day.\r\n• Handmade Ceramic Cup (Rs. 200) \r\nA beautifully crafted ceramic cup, perfect for enjoying your favorite tea or coffee. The unique design adds a touch of Nepali artistry to your collection.\r\n', '2025-02-17 15:22:06'),
 (6, 'Sampanna Gift Box (सम्पन्न) ', 1500.00, '../assets/images/67b3543c1ff1a.jpg', 'Sampanna means affluent, and this box is crafted to make you feel just that! Filled with cultural treasures, spiritual artifacts, and wellness essentials, it’s the perfect gift for those who appreciate luxury and Nepal’s rich traditions. Ideal for anyone who loves indulging in the finer things in life.\r\nPackaging: Bamboo Box Packaging (Rs. 300) \r\n• Special Thamel Blend Coffee (Rs. 400) \r\nA special blend of coffee beans sourced from the foothills of the Himalayas, offering a rich, full-bodied flavor that’s perfect for any time of day.\r\n• Dhaka Handwoven Scarf (Rs. 600) \r\nThis premium scarf is woven with traditional Dhaka fabric, showcasing exquisite craftsmanship and adding a touch of elegance to any wardrobe.\r\n• Scented Candle Set (Rs. 200) \r\nA set of aromatic candles made from natural wax, designed to create a calming atmosphere in your home with their soothing fragrances.\r\n• Nepali Herbal Bath Salt (Rs. 150) \r\nInfused with Himalayan salts and essential oils, this bath salt helps to detoxify and relax the body after a long day.\r\n', '2025-02-17 15:22:36'),
 (7, 'Paramparik Gift Box (पारम्परिक) ', 2000.00, '../assets/images/67b3545a2da2d.jpg', 'Paramparik means tradition, and this box offers a luxurious blend of cultural and artisanal items that showcase the essence of Nepali heritage and craftsmanship. Perfect for gifting or indulging yourself in a premium Nepali experience, it’s a true celebration of tradition and luxury.\r\nPackaging: Embroidered Fabric Box (Rs. 400) \r\n• Yak Cheese (Rs. 600) \r\nA unique and flavorful cheese made from yak milk, a traditional delicacy from the Himalayas. Rich in nutrients, it’s a delicacy enjoyed by many in Nepal.\r\n• Prayer Wheel (Rs. 700) \r\nA beautifully crafted prayer wheel made from brass, often used in Tibetan Buddhist practice, and believed to bring blessings and good karma.\r\n• Wooden Incense Burner (Rs. 300) \r\nA traditional wooden incense holder designed to burn incense sticks, filling the room with soothing fragrances and promoting tranquility.\r\n• Himalayan Essential Oils Set (Rs. 200) \r\nA set of essential oils derived from Himalayan plants, ideal for aromatherapy and relaxation.\r\n', '2025-02-17 15:23:06'),
@@ -222,7 +214,7 @@ INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `i
 (29, 'Key rings', 'Add a personal touch to your keys with our stylish key rings, crafted from high-quality materials. Perfect for organizing keys or as a thoughtful gift, these key rings are durable, lightweight, and come in a variety of designs to suit any style.', 100.00, '../assets/images/67b047621f9751.83221143.png', '2025-02-15 07:50:58', '2025-02-15 07:50:58'),
 (30, 'Mini Bajra Key Rings', 'Inspired by the sacred Bajra (Vajra), these handcrafted key rings symbolize strength and wisdom in Nepali Buddhist culture. Made from brass or alloy, they are lightweight, durable, and intricately designed, making them a meaningful accessory or souvenir.', 120.00, '../assets/images/67b0477cae93f6.40646154.png', '2025-02-15 07:51:24', '2025-02-15 07:51:24'),
 (31, 'Handwoven baskets', 'Beautifully crafted by Nepali artisans, these eco-friendly, handwoven baskets are made from natural fibers like bamboo, cane, and rattan. Perfect for storage, decor, or gifting, they combine durability with rustic charm. Lightweight yet sturdy, they offer a sustainable and stylish touch to any space.', 700.00, '../assets/images/67b04798517e32.99504589.png', '2025-02-15 07:51:52', '2025-02-15 07:51:52'),
-(32, 'Medium Royal Diamond Oil Lamp Diyo Akhanda Batti', 'This is a medium sized Royal Diamond Oil Lamp or Diyo or also called Akhanda Batti made up of brass. This product is used for offering the light for the gods and goddesses or in temple. It can also be used as a decorative item or candle. This oil lamp has a very unique and attractive design which consists of 3 parts. It has a vessel for putting the oil and light, a outer cover consisting of the diamonds (not real) and a top cover. It has the oil capacity of 30 ml. The height of this product is 12 cm whereas the width is 7.2 cm. The net weight is 210 grams approximately. This lamp has an excellent craftsmanship.', 900.00, '../assets/images/67b047b92aaae3.84479143.png', '2025-02-15 07:52:25', '2025-02-15 07:52:25');
+(32, 'Medium Royal Diamond Oil Lamp Diyo Akhanda Batti', 'This is a medium sized Royal Diamond Oil Lamp or Diyo or also called Akhanda Batti made up of brass. This product is used for offering the light for the gods and goddesses or in temple. It can also be used as a decorative item or candle. This oil lamp has a very unique and attractive design which consists of 3 parts. It has a vessel for putting the oil and light, a outer cover consisting of the diamonds (not real) and a top cover. It has the oil capacity of 30 ml. The height of this product is 12 cm whereas the width is 7.2 cm. The net weight is 210 grams approximately. This lamp has an excellent craftsmanship.', 950.00, '../assets/images/67b047b92aaae3.84479143.png', '2025-02-15 07:52:25', '2025-02-18 07:45:41');
 
 -- --------------------------------------------------------
 
@@ -242,20 +234,19 @@ CREATE TABLE `users` (
   `terms_agreed` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `role` varchar(50) NOT NULL DEFAULT 'user',
-  `reset_token` varchar(255) DEFAULT NULL,
-  `token_expiry` datetime DEFAULT NULL
+  `role` varchar(50) NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `dob`, `gender`, `password_hash`, `terms_agreed`, `created_at`, `updated_at`, `role`, `reset_token`, `token_expiry`) VALUES
-(1, 'Aayush', 'Agrawal', 'aayushagrawal4572@gmail.com', '9823199038', '2003-06-11', 'male', '$2y$10$whzo4Hcu6Ldl08n4yyLsLO0vi0AH2Fisi.azGwIfi23w.wO8jCUhm', 1, '2025-02-09 15:52:12', '2025-02-11 17:34:08', 'user', 'd0383141857fa5d530727f790dced10e717ec6c1dc6a3a45c5b580d959c08a9f07d59f16b93d8c673927c0541b2057900a99', '2025-02-11 21:27:11'),
-(5, 'admin', 'admin', 'admin@admin.com', '9848454545', '2002-06-13', 'male', '$2y$10$zp1cwnuAUJXZMfsKRyTfMuSgd9O2BzDuEOLvDmbDHJ5y0383h45ui', 1, '2025-02-10 16:09:50', '2025-02-10 16:10:34', 'admin', NULL, NULL),
-(7, 'test', 'user', 'testuser@gmail.com', '9845152632', '2005-02-09', 'female', '$2y$10$max2ANMYaZ3a06MI8Julx.Xz8FFTspXHbJlBT1Qz67.NSVaQC6L8a', 1, '2025-02-15 16:39:17', '2025-02-15 16:39:17', 'user', NULL, NULL),
-(8, 'test', '5', 'test5@gmail.com', '554541215', '2004-06-08', 'male', '$2y$10$Joo5bYkiSWjNPm9umAqYH.qo7bAdP2Ok5sohmUnKRqYId9xfD8KzK', 1, '2025-02-17 16:21:30', '2025-02-17 16:48:31', 'admin', NULL, NULL);
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `dob`, `gender`, `password_hash`, `terms_agreed`, `created_at`, `updated_at`, `role`) VALUES
+(5, 'admin', 'admin', 'admin@admin.com', '9848454545', '2002-06-13', 'male', '$2y$10$zp1cwnuAUJXZMfsKRyTfMuSgd9O2BzDuEOLvDmbDHJ5y0383h45ui', 1, '2025-02-10 16:09:50', '2025-02-10 16:10:34', 'admin'),
+(7, 'test', 'user', 'testuser@gmail.com', '9845152632', '2005-02-09', 'female', '$2y$10$max2ANMYaZ3a06MI8Julx.Xz8FFTspXHbJlBT1Qz67.NSVaQC6L8a', 1, '2025-02-15 16:39:17', '2025-02-15 16:39:17', 'user'),
+(13, 'test', '2', 'test@gmail.com', '985641256', '2007-07-13', 'male', '$2y$10$cEM9zu3lysX.uzbcujyyA.OD8QorRAJ7rVSykGB/FaX7rMrxE4tTC', 1, '2025-02-18 10:30:33', '2025-02-18 10:30:33', 'user'),
+(14, 'test', '3', 'test3@gmail.com', '44542121', '2025-02-12', 'female', '$2y$10$3t6T/Z481WRIs60O3Pyv9el25yTYdsAQ8W4CZqmwDYyERue4DTe/.', 1, '2025-02-18 10:32:45', '2025-02-18 10:32:45', 'user'),
+(16, 'Aayush', 'Agrawal', 'aayushagrawal4572@gmail.com', '9823199038', '2003-07-03', 'male', '$2y$10$7oXhuOMzOW9VqFyKzQ4Uteq5Oi4IgU2qs30QgKFELOb.ODzcyFsz2', 1, '2025-02-18 11:45:09', '2025-02-18 11:47:11', 'user');
 
 -- --------------------------------------------------------
 
@@ -280,9 +271,8 @@ CREATE TABLE `user_addresses` (
 --
 
 INSERT INTO `user_addresses` (`id`, `user_id`, `address`, `city`, `province`, `postal_code`, `latitude`, `longitude`, `is_default`) VALUES
-(1, 1, 'Chhetrapati ', 'kathmandu ', 'Bagmati', '3006', 0, 0, 1),
 (2, 7, 'Chhetrapati ', 'Kathmandu', 'Bagmati', '3006', 0, 0, 1),
-(3, 8, 'Dhalko', 'ktm', 'Bagmati', '3006', 0, 0, 1);
+(8, 16, 'Chhetrapati ', 'Kathmandu', 'Bagmati', '3006', 0, 0, 1);
 
 --
 -- Indexes for dumped tables
@@ -354,49 +344,49 @@ ALTER TABLE `user_addresses`
 -- AUTO_INCREMENT for table `boxes`
 --
 ALTER TABLE `boxes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `packages`
 --
 ALTER TABLE `packages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
 --
 ALTER TABLE `user_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
