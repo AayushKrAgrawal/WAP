@@ -1,7 +1,6 @@
-<?php 
-include '../includes/header.php'; 
+<?php
+include '../includes/header.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,50 +9,39 @@ include '../includes/header.php';
     <title>Customize Package</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom hover effects */
-        .card:hover img {
-            transform: scale(1.1);
-        }
-        .card:hover h2 {
-            color: #6D28D9; /* Purple color on hover */
+        html, body {
+            background-color: #F5EFFF !important;
         }
     </style>
 </head>
-<body style="background-color: #F5EFFF;">
-
-    <!-- Heading -->
-    <section class="text-center py-12">
-        <h1 class="text-5xl font-extrabold text-gray-800">Customize Your Package Here:</h1>
-        <p class="text-lg text-gray-600 mt-4">Select the perfect box and add your favorite gifts!</p>
-    </section>
-
-    <!-- Cards Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <!-- Choose Your Box Card -->
-            <a href="chooseBox.php" class="card block bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
-                <img src="https://i.pinimg.com/736x/14/d5/75/14d575aef399e9e5819a8aba80ab3893.jpg" 
-                     alt="Choose Your Box" 
-                     class="w-full h-80 object-cover transition-transform duration-500">
-                <div class="p-8 text-center">
-                    <h2 class="text-3xl font-semibold text-gray-800 transition-colors duration-300">Choose Your Box</h2>
-                    <p class="text-gray-600 mt-4">Select from a variety of elegant boxes to suit your style.</p>
-                </div>
-            </a>
-
-            <!-- Choose Your Gifts Card -->
-            <a href="products.php" class="card block bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
-                <img src="https://i.pinimg.com/236x/df/9b/80/df9b80a703566f7ac511550020bc197f.jpg" 
-                     alt="Choose Your Gifts" 
-                     class="w-full h-80 object-cover transition-transform duration-500">
-                <div class="p-8 text-center">
-                    <h2 class="text-3xl font-semibold text-gray-800 transition-colors duration-300">Choose Your Gifts</h2>
-                    <p class="text-gray-600 mt-4">Add delightful gifts to create the perfect package.</p>
-                </div>
-            </a>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 text-center mt-20">
+        <!-- Title -->
+        <h1 class="text-3xl font-bold text-[#B82132] mb-4">Customize Your Package</h1>
+        <!-- Description -->
+        <p class="text-gray-600 mb-10">Choose your preferred options and create a personalized package for any occasion.</p>
+        <!-- Cards Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 justify-items-center mx-auto max-w-5xl">
+            <!-- Card 1 -->
+            <div class="flex flex-col items-center w-3/4 mb-6">
+                <a href="../pages/chooseBox.php" class="block w-full">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                        <img class="w-full h-96 object-cover" src="../assets/images/packaging.jpg">
+                    </div>
+                </a>
+                <h2 class="text-xl font-semibold text-gray-800 mt-4">Packaging</h2>
+            </div>
+            <!-- Card 2 -->
+            <div class="flex flex-col items-center w-3/4 mb-6">
+                <a href="../pages/products.php" class="block w-full">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                        <img class="w-full h-96 object-cover" src="../assets/images/customizee.jpg">
+                    </div>
+                </a>
+                <h2 class="text-xl font-semibold text-gray-800 mt-4">Items</h2>
+            </div>
         </div>
-    </section>
-
+    </div>    
     <!-- Footer -->
     <?php include '../includes/footer.php'; ?>
 </body>
