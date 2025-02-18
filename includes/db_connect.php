@@ -3,12 +3,11 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$port = 3307;
 $dbname = "hamroPratibha";
 
 try {
     // Create a database connection using PDO with error mode enabled
-    $dsn = "mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8mb4";
+    $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
     $conn = new PDO($dsn, $username, $password);
 
     // Set PDO error mode to exception

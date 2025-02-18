@@ -27,7 +27,7 @@ try {
 
 
 <!-- Banner -->
-<div class="w-full h-[500px] bg-cover bg-center" style="background-image: url('../assets/images/banner.jpg');">
+<div class="w-full h-[600px] bg-cover bg-center" style="background-image: url('../assets/images/dashboard.jpg');">
     <div class="w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
         <h1 class="text-white text-5xl font-bold">Welcome to Hamro Pratibha</h1>
     </div>
@@ -35,24 +35,24 @@ try {
 
 <!-- Categories Section -->
 <div class="max-w-7xl mx-auto py-16 text-center">
-    <h2 class="text-4xl font-bold text-gray-800">Categories</h2>
-    <p class="text-gray-600 mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at justo nec arcu suscipit dictum.</p>
+    <h2 class="text-4xl font-bold text-[#B82132]">Categories</h2>
+    <p class="text-gray-600 mt-4">Discover curated gift boxes featuring Nepali craftsmanship. Choose from pre-made selections or customize your own for any occasion.</p>
     
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
         <a href="preMadePackages.php" class="block">
             <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
-                <img src="../assets/images/Pre-Made.jpg" alt="Our Packages" class="w-full h-52 object-cover">
+                <img src="../assets/images/Pre-Made.jpg" alt="Our Packages" class="w-full h-72 object-cover">
                 <div class="p-4 text-center">
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Our Packages</h3>
+                    <h3 class="text-2xl font-semibold text-[#B82132] mb-2">Our Packages</h3>
                 </div>
             </div>
         </a>
         
         <a href="CustomizePackage.php" class="block">
             <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
-                <img src="../assets/images/gift basket.jpg" alt="Customize Your Package" class="w-full h-52 object-cover">
+                <img src="../assets/images/gift basket.jpg" alt="Customize Your Package" class="w-full h-72 object-cover">
                 <div class="p-4 text-center">
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Customize Your Own Package</h3>
+                    <h3 class="text-2xl font-semibold text-[#B82132] mb-2">Customize Your Own Package</h3>
                 </div>
             </div>
         </a>
@@ -61,10 +61,10 @@ try {
 
 <!-- Our Products Section -->
 <div class="max-w-7xl mx-auto py-16 text-center">
-    <h2 class="text-4xl font-bold text-gray-800">Our Products</h2>
-    <p class="text-gray-600 mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum consequat lacus ac turpis lacinia, a pretium lectus facilisis.</p>
+    <h2 class="text-4xl font-bold text-[#B82132]">Our Products</h2>
+    <p class="text-gray-600 mt-4">Discover our thoughtfully curated gift boxes, each showcasing the rich artistry of Nepali craftsmanship. Whether you choose from our pre-made selections or customize your own, our gifts are perfect for any occasion, offering a personal and meaningful touch that celebrates Nepal's heritage.</p>
     
-    <a href="products.php" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition mt-6">Shop Now</a>
+    <a href="products.php" class="inline-block bg-[#B82132] hover:bg-[#9F1E28] text-white px-6 py-3 rounded-full transition mt-6">Shop Now</a>
     
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10">
         <?php
